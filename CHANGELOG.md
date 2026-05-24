@@ -6,3 +6,4 @@ All notable changes to the Viridis project will be documented in this file in ch
 2. `7204d1a` [+] Create FastAPI app factory and config
 3. `1672577` [+] Set up PostgreSQL SQLAlchemy models
 4. `0424baf` [+] Configure Alembic for async migrations
+5. `f2912f3` [+] Set up Redis connection pool and Lua scripts
