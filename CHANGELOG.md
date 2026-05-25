@@ -12,3 +12,4 @@ All notable changes to the Viridis project will be documented in this file in ch
 8. `3f3c786` [+] Build management plane, API key issuance, and HMAC override verification
 9. `49ec422` [+] Add PostgreSQL trigger migration for audit log immutability
 10. `b21d659` [+] Integrate Redis Streams async audit pipeline and operational modes
+11. `ebee56b` [+] Finalize CI/CD pipeline, k6 load testing, and project documentation
