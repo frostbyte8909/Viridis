@@ -14,3 +14,4 @@ All notable changes to the Viridis project will be documented in this file in ch
 10. `b21d659` [+] Integrate Redis Streams async audit pipeline and operational modes
 11. `ebee56b` [+] Finalize CI/CD pipeline, k6 load testing, and project documentation
 12. `5dbc6d4` [+] Fix docker build order, fix alembic graph, and add intensive load testing benchmarks
+13. `c4d8d02` [+] Move README to repository root for visibility
