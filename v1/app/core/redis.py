@@ -1,7 +1,7 @@
 import logging
 from typing import Dict
 from redis.asyncio import Redis, from_url
-from redis.asyncio.client import Script
+from redis.client import Script
 
 from app.config import settings
 
