@@ -19,3 +19,4 @@ All notable changes to the Viridis project will be documented in this file in ch
 15. `f838f91` [+] Add production docker-compose configuration
 16. `608fecb` [+] Implement Azure IaC Bicep templates for Container Apps
 17. `755c830` [+] Implement GitHub Actions CI/CD pipeline
+18. `3cbe71d` [+] pre-fix commit before pytest issues fix
