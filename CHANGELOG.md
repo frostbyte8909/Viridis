@@ -17,3 +17,4 @@ All notable changes to the Viridis project will be documented in this file in ch
 13. `c4d8d02` [+] Move README to repository root for visibility
 14. `02ec4e8` [+] Add basic pytest framework for CI
 15. `f838f91` [+] Add production docker-compose configuration
+16. `608fecb` [+] Implement Azure IaC Bicep templates for Container Apps
