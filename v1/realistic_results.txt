@@ -1,0 +1,468 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: -
+        output: -
+
+     scenarios: (100.00%) 3 scenarios, 240 max VUs, 1m50s max duration (incl. graceful stop):
+              * brute_forcer: 10 looping VUs for 1m20s (exec: brute, gracefulStop: 30s)
+              * normal_traffic: Up to 200 looping VUs for 1m20s over 3 stages (gracefulRampDown: 30s, exec: normal, gracefulStop: 30s)
+              * sneaky_spiker: 30 looping VUs for 1m20s (exec: spike, gracefulStop: 30s)
+
+
+running (0m01.0s), 049/240 VUs, 71 complete and 0 interrupted iterations
+brute_forcer     [   1% ] 10 VUs       0m01.0s/1m20s
+normal_traffic   [   1% ] 009/200 VUs  0m01.0s/1m20.0s
+sneaky_spiker    [   1% ] 30 VUs       0m01.0s/1m20s
+
+running (0m02.0s), 059/240 VUs, 166 complete and 0 interrupted iterations
+brute_forcer     [   2% ] 10 VUs       0m02.0s/1m20s
+normal_traffic   [   2% ] 019/200 VUs  0m02.0s/1m20.0s
+sneaky_spiker    [   2% ] 30 VUs       0m02.0s/1m20s
+
+running (0m03.0s), 069/240 VUs, 270 complete and 0 interrupted iterations
+brute_forcer     [   4% ] 10 VUs       0m03.0s/1m20s
+normal_traffic   [   4% ] 029/200 VUs  0m03.0s/1m20.0s
+sneaky_spiker    [   4% ] 30 VUs       0m03.0s/1m20s
+
+running (0m04.0s), 079/240 VUs, 400 complete and 0 interrupted iterations
+brute_forcer     [   5% ] 10 VUs       0m04.0s/1m20s
+normal_traffic   [   5% ] 039/200 VUs  0m04.0s/1m20.0s
+sneaky_spiker    [   5% ] 30 VUs       0m04.0s/1m20s
+
+running (0m05.0s), 089/240 VUs, 512 complete and 0 interrupted iterations
+brute_forcer     [   6% ] 10 VUs       0m05.0s/1m20s
+normal_traffic   [   6% ] 049/200 VUs  0m05.0s/1m20.0s
+sneaky_spiker    [   6% ] 30 VUs       0m05.0s/1m20s
+
+running (0m06.0s), 099/240 VUs, 628 complete and 0 interrupted iterations
+brute_forcer     [   7% ] 10 VUs       0m06.0s/1m20s
+normal_traffic   [   7% ] 059/200 VUs  0m06.0s/1m20.0s
+sneaky_spiker    [   7% ] 30 VUs       0m06.0s/1m20s
+
+running (0m07.0s), 109/240 VUs, 790 complete and 0 interrupted iterations
+brute_forcer     [   9% ] 10 VUs       0m07.0s/1m20s
+normal_traffic   [   9% ] 069/200 VUs  0m07.0s/1m20.0s
+sneaky_spiker    [   9% ] 30 VUs       0m07.0s/1m20s
+
+running (0m08.0s), 119/240 VUs, 920 complete and 0 interrupted iterations
+brute_forcer     [  10% ] 10 VUs       0m08.0s/1m20s
+normal_traffic   [  10% ] 079/200 VUs  0m08.0s/1m20.0s
+sneaky_spiker    [  10% ] 30 VUs       0m08.0s/1m20s
+
+running (0m09.0s), 129/240 VUs, 1053 complete and 0 interrupted iterations
+brute_forcer     [  11% ] 10 VUs       0m09.0s/1m20s
+normal_traffic   [  11% ] 089/200 VUs  0m09.0s/1m20.0s
+sneaky_spiker    [  11% ] 30 VUs       0m09.0s/1m20s
+
+running (0m10.0s), 139/240 VUs, 1220 complete and 0 interrupted iterations
+brute_forcer     [  12% ] 10 VUs       0m10.0s/1m20s
+normal_traffic   [  12% ] 099/200 VUs  0m10.0s/1m20.0s
+sneaky_spiker    [  12% ] 30 VUs       0m10.0s/1m20s
+
+running (0m11.0s), 149/240 VUs, 1360 complete and 0 interrupted iterations
+brute_forcer     [  14% ] 10 VUs       0m11.0s/1m20s
+normal_traffic   [  14% ] 109/200 VUs  0m11.0s/1m20.0s
+sneaky_spiker    [  14% ] 30 VUs       0m11.0s/1m20s
+
+running (0m12.0s), 159/240 VUs, 1509 complete and 0 interrupted iterations
+brute_forcer     [  15% ] 10 VUs       0m12.0s/1m20s
+normal_traffic   [  15% ] 119/200 VUs  0m12.0s/1m20.0s
+sneaky_spiker    [  15% ] 30 VUs       0m12.0s/1m20s
+
+running (0m13.0s), 169/240 VUs, 1688 complete and 0 interrupted iterations
+brute_forcer     [  16% ] 10 VUs       0m13.0s/1m20s
+normal_traffic   [  16% ] 129/200 VUs  0m13.0s/1m20.0s
+sneaky_spiker    [  16% ] 30 VUs       0m13.0s/1m20s
+
+running (0m14.0s), 179/240 VUs, 1837 complete and 0 interrupted iterations
+brute_forcer     [  17% ] 10 VUs       0m14.0s/1m20s
+normal_traffic   [  17% ] 139/200 VUs  0m14.0s/1m20.0s
+sneaky_spiker    [  17% ] 30 VUs       0m14.0s/1m20s
+
+running (0m15.0s), 189/240 VUs, 2008 complete and 0 interrupted iterations
+brute_forcer     [  19% ] 10 VUs       0m15.0s/1m20s
+normal_traffic   [  19% ] 149/200 VUs  0m15.0s/1m20.0s
+sneaky_spiker    [  19% ] 30 VUs       0m15.0s/1m20s
+
+running (0m16.0s), 199/240 VUs, 2201 complete and 0 interrupted iterations
+brute_forcer     [  20% ] 10 VUs       0m16.0s/1m20s
+normal_traffic   [  20% ] 159/200 VUs  0m16.0s/1m20.0s
+sneaky_spiker    [  20% ] 30 VUs       0m16.0s/1m20s
+
+running (0m17.0s), 209/240 VUs, 2371 complete and 0 interrupted iterations
+brute_forcer     [  21% ] 10 VUs       0m17.0s/1m20s
+normal_traffic   [  21% ] 169/200 VUs  0m17.0s/1m20.0s
+sneaky_spiker    [  21% ] 30 VUs       0m17.0s/1m20s
+
+running (0m18.0s), 219/240 VUs, 2557 complete and 0 interrupted iterations
+brute_forcer     [  22% ] 10 VUs       0m18.0s/1m20s
+normal_traffic   [  22% ] 179/200 VUs  0m18.0s/1m20.0s
+sneaky_spiker    [  22% ] 30 VUs       0m18.0s/1m20s
+
+running (0m19.0s), 229/240 VUs, 2756 complete and 0 interrupted iterations
+brute_forcer     [  24% ] 10 VUs       0m19.0s/1m20s
+normal_traffic   [  24% ] 189/200 VUs  0m19.0s/1m20.0s
+sneaky_spiker    [  24% ] 30 VUs       0m19.0s/1m20s
+
+running (0m20.0s), 239/240 VUs, 2959 complete and 0 interrupted iterations
+brute_forcer     [  25% ] 10 VUs       0m20.0s/1m20s
+normal_traffic   [  25% ] 199/200 VUs  0m20.0s/1m20.0s
+sneaky_spiker    [  25% ] 30 VUs       0m20.0s/1m20s
+
+running (0m21.0s), 240/240 VUs, 3151 complete and 0 interrupted iterations
+brute_forcer     [  26% ] 10 VUs       0m21.0s/1m20s
+normal_traffic   [  26% ] 200/200 VUs  0m21.0s/1m20.0s
+sneaky_spiker    [  26% ] 30 VUs       0m21.0s/1m20s
+
+running (0m22.0s), 240/240 VUs, 3365 complete and 0 interrupted iterations
+brute_forcer     [  27% ] 10 VUs       0m22.0s/1m20s
+normal_traffic   [  27% ] 200/200 VUs  0m22.0s/1m20.0s
+sneaky_spiker    [  27% ] 30 VUs       0m22.0s/1m20s
+
+running (0m23.0s), 240/240 VUs, 3571 complete and 0 interrupted iterations
+brute_forcer     [  29% ] 10 VUs       0m23.0s/1m20s
+normal_traffic   [  29% ] 200/200 VUs  0m23.0s/1m20.0s
+sneaky_spiker    [  29% ] 30 VUs       0m23.0s/1m20s
+
+running (0m24.0s), 240/240 VUs, 3758 complete and 0 interrupted iterations
+brute_forcer     [  30% ] 10 VUs       0m24.0s/1m20s
+normal_traffic   [  30% ] 200/200 VUs  0m24.0s/1m20.0s
+sneaky_spiker    [  30% ] 30 VUs       0m24.0s/1m20s
+
+running (0m25.0s), 240/240 VUs, 3998 complete and 0 interrupted iterations
+brute_forcer     [  31% ] 10 VUs       0m25.0s/1m20s
+normal_traffic   [  31% ] 200/200 VUs  0m25.0s/1m20.0s
+sneaky_spiker    [  31% ] 30 VUs       0m25.0s/1m20s
+
+running (0m26.0s), 240/240 VUs, 4187 complete and 0 interrupted iterations
+brute_forcer     [  32% ] 10 VUs       0m26.0s/1m20s
+normal_traffic   [  32% ] 200/200 VUs  0m26.0s/1m20.0s
+sneaky_spiker    [  32% ] 30 VUs       0m26.0s/1m20s
+
+running (0m27.0s), 240/240 VUs, 4378 complete and 0 interrupted iterations
+brute_forcer     [  34% ] 10 VUs       0m27.0s/1m20s
+normal_traffic   [  34% ] 200/200 VUs  0m27.0s/1m20.0s
+sneaky_spiker    [  34% ] 30 VUs       0m27.0s/1m20s
+
+running (0m28.0s), 240/240 VUs, 4601 complete and 0 interrupted iterations
+brute_forcer     [  35% ] 10 VUs       0m28.0s/1m20s
+normal_traffic   [  35% ] 200/200 VUs  0m28.0s/1m20.0s
+sneaky_spiker    [  35% ] 30 VUs       0m28.0s/1m20s
+
+running (0m29.0s), 240/240 VUs, 4799 complete and 0 interrupted iterations
+brute_forcer     [  36% ] 10 VUs       0m29.0s/1m20s
+normal_traffic   [  36% ] 200/200 VUs  0m29.0s/1m20.0s
+sneaky_spiker    [  36% ] 30 VUs       0m29.0s/1m20s
+
+running (0m30.0s), 240/240 VUs, 4985 complete and 0 interrupted iterations
+brute_forcer     [  37% ] 10 VUs       0m30.0s/1m20s
+normal_traffic   [  37% ] 200/200 VUs  0m30.0s/1m20.0s
+sneaky_spiker    [  37% ] 30 VUs       0m30.0s/1m20s
+
+running (0m31.0s), 240/240 VUs, 5225 complete and 0 interrupted iterations
+brute_forcer     [  39% ] 10 VUs       0m31.0s/1m20s
+normal_traffic   [  39% ] 200/200 VUs  0m31.0s/1m20.0s
+sneaky_spiker    [  39% ] 30 VUs       0m31.0s/1m20s
+
+running (0m32.0s), 240/240 VUs, 5414 complete and 0 interrupted iterations
+brute_forcer     [  40% ] 10 VUs       0m32.0s/1m20s
+normal_traffic   [  40% ] 200/200 VUs  0m32.0s/1m20.0s
+sneaky_spiker    [  40% ] 30 VUs       0m32.0s/1m20s
+
+running (0m33.0s), 240/240 VUs, 5615 complete and 0 interrupted iterations
+brute_forcer     [  41% ] 10 VUs       0m33.0s/1m20s
+normal_traffic   [  41% ] 200/200 VUs  0m33.0s/1m20.0s
+sneaky_spiker    [  41% ] 30 VUs       0m33.0s/1m20s
+
+running (0m34.0s), 240/240 VUs, 5835 complete and 0 interrupted iterations
+brute_forcer     [  42% ] 10 VUs       0m34.0s/1m20s
+normal_traffic   [  42% ] 200/200 VUs  0m34.0s/1m20.0s
+sneaky_spiker    [  42% ] 30 VUs       0m34.0s/1m20s
+
+running (0m35.0s), 240/240 VUs, 6037 complete and 0 interrupted iterations
+brute_forcer     [  44% ] 10 VUs       0m35.0s/1m20s
+normal_traffic   [  44% ] 200/200 VUs  0m35.0s/1m20.0s
+sneaky_spiker    [  44% ] 30 VUs       0m35.0s/1m20s
+
+running (0m36.0s), 240/240 VUs, 6235 complete and 0 interrupted iterations
+brute_forcer     [  45% ] 10 VUs       0m36.0s/1m20s
+normal_traffic   [  45% ] 200/200 VUs  0m36.0s/1m20.0s
+sneaky_spiker    [  45% ] 30 VUs       0m36.0s/1m20s
+
+running (0m37.0s), 240/240 VUs, 6466 complete and 0 interrupted iterations
+brute_forcer     [  46% ] 10 VUs       0m37.0s/1m20s
+normal_traffic   [  46% ] 200/200 VUs  0m37.0s/1m20.0s
+sneaky_spiker    [  46% ] 30 VUs       0m37.0s/1m20s
+
+running (0m38.0s), 240/240 VUs, 6660 complete and 0 interrupted iterations
+brute_forcer     [  47% ] 10 VUs       0m38.0s/1m20s
+normal_traffic   [  47% ] 200/200 VUs  0m38.0s/1m20.0s
+sneaky_spiker    [  47% ] 30 VUs       0m38.0s/1m20s
+
+running (0m39.0s), 240/240 VUs, 6854 complete and 0 interrupted iterations
+brute_forcer     [  49% ] 10 VUs       0m39.0s/1m20s
+normal_traffic   [  49% ] 200/200 VUs  0m39.0s/1m20.0s
+sneaky_spiker    [  49% ] 30 VUs       0m39.0s/1m20s
+
+running (0m40.0s), 240/240 VUs, 7082 complete and 0 interrupted iterations
+brute_forcer     [  50% ] 10 VUs       0m40.0s/1m20s
+normal_traffic   [  50% ] 200/200 VUs  0m40.0s/1m20.0s
+sneaky_spiker    [  50% ] 30 VUs       0m40.0s/1m20s
+
+running (0m41.0s), 240/240 VUs, 7285 complete and 0 interrupted iterations
+brute_forcer     [  51% ] 10 VUs       0m41.0s/1m20s
+normal_traffic   [  51% ] 200/200 VUs  0m41.0s/1m20.0s
+sneaky_spiker    [  51% ] 30 VUs       0m41.0s/1m20s
+
+running (0m42.0s), 240/240 VUs, 7487 complete and 0 interrupted iterations
+brute_forcer     [  52% ] 10 VUs       0m42.0s/1m20s
+normal_traffic   [  52% ] 200/200 VUs  0m42.0s/1m20.0s
+sneaky_spiker    [  52% ] 30 VUs       0m42.0s/1m20s
+
+running (0m43.0s), 240/240 VUs, 7708 complete and 0 interrupted iterations
+brute_forcer     [  54% ] 10 VUs       0m43.0s/1m20s
+normal_traffic   [  54% ] 200/200 VUs  0m43.0s/1m20.0s
+sneaky_spiker    [  54% ] 30 VUs       0m43.0s/1m20s
+
+running (0m44.0s), 240/240 VUs, 7911 complete and 0 interrupted iterations
+brute_forcer     [  55% ] 10 VUs       0m44.0s/1m20s
+normal_traffic   [  55% ] 200/200 VUs  0m44.0s/1m20.0s
+sneaky_spiker    [  55% ] 30 VUs       0m44.0s/1m20s
+
+running (0m45.0s), 240/240 VUs, 8097 complete and 0 interrupted iterations
+brute_forcer     [  56% ] 10 VUs       0m45.0s/1m20s
+normal_traffic   [  56% ] 200/200 VUs  0m45.0s/1m20.0s
+sneaky_spiker    [  56% ] 30 VUs       0m45.0s/1m20s
+
+running (0m46.0s), 240/240 VUs, 8333 complete and 0 interrupted iterations
+brute_forcer     [  57% ] 10 VUs       0m46.0s/1m20s
+normal_traffic   [  57% ] 200/200 VUs  0m46.0s/1m20.0s
+sneaky_spiker    [  57% ] 30 VUs       0m46.0s/1m20s
+
+running (0m47.0s), 240/240 VUs, 8526 complete and 0 interrupted iterations
+brute_forcer     [  59% ] 10 VUs       0m47.0s/1m20s
+normal_traffic   [  59% ] 200/200 VUs  0m47.0s/1m20.0s
+sneaky_spiker    [  59% ] 30 VUs       0m47.0s/1m20s
+
+running (0m48.0s), 240/240 VUs, 8720 complete and 0 interrupted iterations
+brute_forcer     [  60% ] 10 VUs       0m48.0s/1m20s
+normal_traffic   [  60% ] 200/200 VUs  0m48.0s/1m20.0s
+sneaky_spiker    [  60% ] 30 VUs       0m48.0s/1m20s
+
+running (0m49.0s), 240/240 VUs, 8949 complete and 0 interrupted iterations
+brute_forcer     [  61% ] 10 VUs       0m49.0s/1m20s
+normal_traffic   [  61% ] 200/200 VUs  0m49.0s/1m20.0s
+sneaky_spiker    [  61% ] 30 VUs       0m49.0s/1m20s
+
+running (0m50.0s), 240/240 VUs, 9147 complete and 0 interrupted iterations
+brute_forcer     [  62% ] 10 VUs       0m50.0s/1m20s
+normal_traffic   [  62% ] 200/200 VUs  0m50.0s/1m20.0s
+sneaky_spiker    [  62% ] 30 VUs       0m50.0s/1m20s
+
+running (0m51.0s), 240/240 VUs, 9333 complete and 0 interrupted iterations
+brute_forcer     [  64% ] 10 VUs       0m51.0s/1m20s
+normal_traffic   [  64% ] 200/200 VUs  0m51.0s/1m20.0s
+sneaky_spiker    [  64% ] 30 VUs       0m51.0s/1m20s
+
+running (0m52.0s), 240/240 VUs, 9569 complete and 0 interrupted iterations
+brute_forcer     [  65% ] 10 VUs       0m52.0s/1m20s
+normal_traffic   [  65% ] 200/200 VUs  0m52.0s/1m20.0s
+sneaky_spiker    [  65% ] 30 VUs       0m52.0s/1m20s
+
+running (0m53.0s), 240/240 VUs, 9771 complete and 0 interrupted iterations
+brute_forcer     [  66% ] 10 VUs       0m53.0s/1m20s
+normal_traffic   [  66% ] 200/200 VUs  0m53.0s/1m20.0s
+sneaky_spiker    [  66% ] 30 VUs       0m53.0s/1m20s
+
+running (0m54.0s), 240/240 VUs, 9971 complete and 0 interrupted iterations
+brute_forcer     [  67% ] 10 VUs       0m54.0s/1m20s
+normal_traffic   [  67% ] 200/200 VUs  0m54.0s/1m20.0s
+sneaky_spiker    [  67% ] 30 VUs       0m54.0s/1m20s
+
+running (0m55.0s), 240/240 VUs, 10195 complete and 0 interrupted iterations
+brute_forcer     [  69% ] 10 VUs       0m55.0s/1m20s
+normal_traffic   [  69% ] 200/200 VUs  0m55.0s/1m20.0s
+sneaky_spiker    [  69% ] 30 VUs       0m55.0s/1m20s
+
+running (0m56.0s), 240/240 VUs, 10387 complete and 0 interrupted iterations
+brute_forcer     [  70% ] 10 VUs       0m56.0s/1m20s
+normal_traffic   [  70% ] 200/200 VUs  0m56.0s/1m20.0s
+sneaky_spiker    [  70% ] 30 VUs       0m56.0s/1m20s
+
+running (0m57.0s), 240/240 VUs, 10578 complete and 0 interrupted iterations
+brute_forcer     [  71% ] 10 VUs       0m57.0s/1m20s
+normal_traffic   [  71% ] 200/200 VUs  0m57.0s/1m20.0s
+sneaky_spiker    [  71% ] 30 VUs       0m57.0s/1m20s
+
+running (0m58.0s), 240/240 VUs, 10810 complete and 0 interrupted iterations
+brute_forcer     [  72% ] 10 VUs       0m58.0s/1m20s
+normal_traffic   [  72% ] 200/200 VUs  0m58.0s/1m20.0s
+sneaky_spiker    [  72% ] 30 VUs       0m58.0s/1m20s
+
+running (0m59.0s), 240/240 VUs, 11003 complete and 0 interrupted iterations
+brute_forcer     [  74% ] 10 VUs       0m59.0s/1m20s
+normal_traffic   [  74% ] 200/200 VUs  0m59.0s/1m20.0s
+sneaky_spiker    [  74% ] 30 VUs       0m59.0s/1m20s
+
+running (1m00.0s), 240/240 VUs, 11190 complete and 0 interrupted iterations
+brute_forcer     [  75% ] 10 VUs       1m00.0s/1m20s
+normal_traffic   [  75% ] 200/200 VUs  1m00.0s/1m20.0s
+sneaky_spiker    [  75% ] 30 VUs       1m00.0s/1m20s
+
+running (1m01.0s), 240/240 VUs, 11419 complete and 0 interrupted iterations
+brute_forcer     [  76% ] 10 VUs       1m01.0s/1m20s
+normal_traffic   [  76% ] 200/200 VUs  1m01.0s/1m20.0s
+sneaky_spiker    [  76% ] 30 VUs       1m01.0s/1m20s
+
+running (1m02.0s), 230/240 VUs, 11619 complete and 0 interrupted iterations
+brute_forcer     [  77% ] 10 VUs       1m02.0s/1m20s
+normal_traffic   [  77% ] 190/200 VUs  1m02.0s/1m20.0s
+sneaky_spiker    [  77% ] 30 VUs       1m02.0s/1m20s
+
+running (1m03.0s), 218/240 VUs, 11817 complete and 0 interrupted iterations
+brute_forcer     [  79% ] 10 VUs       1m03.0s/1m20s
+normal_traffic   [  79% ] 178/200 VUs  1m03.0s/1m20.0s
+sneaky_spiker    [  79% ] 30 VUs       1m03.0s/1m20s
+
+running (1m04.0s), 209/240 VUs, 12027 complete and 0 interrupted iterations
+brute_forcer     [  80% ] 10 VUs       1m04.0s/1m20s
+normal_traffic   [  80% ] 169/200 VUs  1m04.0s/1m20.0s
+sneaky_spiker    [  80% ] 30 VUs       1m04.0s/1m20s
+
+running (1m05.0s), 203/240 VUs, 12210 complete and 0 interrupted iterations
+brute_forcer     [  81% ] 10 VUs       1m05.0s/1m20s
+normal_traffic   [  81% ] 163/200 VUs  1m05.0s/1m20.0s
+sneaky_spiker    [  81% ] 30 VUs       1m05.0s/1m20s
+
+running (1m06.0s), 193/240 VUs, 12392 complete and 0 interrupted iterations
+brute_forcer     [  82% ] 10 VUs       1m06.0s/1m20s
+normal_traffic   [  82% ] 153/200 VUs  1m06.0s/1m20.0s
+sneaky_spiker    [  82% ] 30 VUs       1m06.0s/1m20s
+
+running (1m07.0s), 182/240 VUs, 12599 complete and 0 interrupted iterations
+brute_forcer     [  84% ] 10 VUs       1m07.0s/1m20s
+normal_traffic   [  84% ] 142/200 VUs  1m07.0s/1m20.0s
+sneaky_spiker    [  84% ] 30 VUs       1m07.0s/1m20s
+
+running (1m08.0s), 174/240 VUs, 12768 complete and 0 interrupted iterations
+brute_forcer     [  85% ] 10 VUs       1m08.0s/1m20s
+normal_traffic   [  85% ] 134/200 VUs  1m08.0s/1m20.0s
+sneaky_spiker    [  85% ] 30 VUs       1m08.0s/1m20s
+
+running (1m09.0s), 163/240 VUs, 12931 complete and 0 interrupted iterations
+brute_forcer     [  86% ] 10 VUs       1m09.0s/1m20s
+normal_traffic   [  86% ] 123/200 VUs  1m09.0s/1m20.0s
+sneaky_spiker    [  86% ] 30 VUs       1m09.0s/1m20s
+
+running (1m10.0s), 151/240 VUs, 13125 complete and 0 interrupted iterations
+brute_forcer     [  87% ] 10 VUs       1m10.0s/1m20s
+normal_traffic   [  87% ] 111/200 VUs  1m10.0s/1m20.0s
+sneaky_spiker    [  87% ] 30 VUs       1m10.0s/1m20s
+
+running (1m11.0s), 139/240 VUs, 13277 complete and 0 interrupted iterations
+brute_forcer     [  89% ] 10 VUs       1m11.0s/1m20s
+normal_traffic   [  89% ] 099/200 VUs  1m11.0s/1m20.0s
+sneaky_spiker    [  89% ] 30 VUs       1m11.0s/1m20s
+
+running (1m12.0s), 133/240 VUs, 13420 complete and 0 interrupted iterations
+brute_forcer     [  90% ] 10 VUs       1m12.0s/1m20s
+normal_traffic   [  90% ] 093/200 VUs  1m12.0s/1m20.0s
+sneaky_spiker    [  90% ] 30 VUs       1m12.0s/1m20s
+
+running (1m13.0s), 123/240 VUs, 13598 complete and 0 interrupted iterations
+brute_forcer     [  91% ] 10 VUs       1m13.0s/1m20s
+normal_traffic   [  91% ] 083/200 VUs  1m13.0s/1m20.0s
+sneaky_spiker    [  91% ] 30 VUs       1m13.0s/1m20s
+
+running (1m14.0s), 112/240 VUs, 13741 complete and 0 interrupted iterations
+brute_forcer     [  92% ] 10 VUs       1m14.0s/1m20s
+normal_traffic   [  92% ] 072/200 VUs  1m14.0s/1m20.0s
+sneaky_spiker    [  92% ] 30 VUs       1m14.0s/1m20s
+
+running (1m15.0s), 099/240 VUs, 13872 complete and 0 interrupted iterations
+brute_forcer     [  94% ] 10 VUs       1m15.0s/1m20s
+normal_traffic   [  94% ] 059/200 VUs  1m15.0s/1m20.0s
+sneaky_spiker    [  94% ] 30 VUs       1m15.0s/1m20s
+
+running (1m16.0s), 093/240 VUs, 14032 complete and 0 interrupted iterations
+brute_forcer     [  95% ] 10 VUs       1m16.0s/1m20s
+normal_traffic   [  95% ] 053/200 VUs  1m16.0s/1m20.0s
+sneaky_spiker    [  95% ] 30 VUs       1m16.0s/1m20s
+
+running (1m17.0s), 086/240 VUs, 14155 complete and 0 interrupted iterations
+brute_forcer     [  96% ] 10 VUs       1m17.0s/1m20s
+normal_traffic   [  96% ] 046/200 VUs  1m17.0s/1m20.0s
+sneaky_spiker    [  96% ] 30 VUs       1m17.0s/1m20s
+
+running (1m18.0s), 071/240 VUs, 14277 complete and 0 interrupted iterations
+brute_forcer     [  97% ] 10 VUs       1m18.0s/1m20s
+normal_traffic   [  97% ] 031/200 VUs  1m18.0s/1m20.0s
+sneaky_spiker    [  97% ] 30 VUs       1m18.0s/1m20s
+
+running (1m19.0s), 060/240 VUs, 14421 complete and 0 interrupted iterations
+brute_forcer     [  99% ] 10 VUs       1m19.0s/1m20s
+normal_traffic   [  99% ] 020/200 VUs  1m19.0s/1m20.0s
+sneaky_spiker    [  99% ] 30 VUs       1m19.0s/1m20s
+
+running (1m20.0s), 049/240 VUs, 14529 complete and 0 interrupted iterations
+brute_forcer     [ 100% ] 10 VUs       1m20.0s/1m20s
+normal_traffic   [ 100% ] 009/200 VUs  1m20.0s/1m20.0s
+sneaky_spiker    [ 100% ] 30 VUs       1m20.0s/1m20s
+
+running (1m21.0s), 033/240 VUs, 14545 complete and 0 interrupted iterations
+brute_forcer   ✓ [ 100% ] 10 VUs       1m20s
+normal_traffic ↓ [ 100% ] 009/200 VUs  1m20s
+sneaky_spiker  ↓ [ 100% ] 30 VUs       1m20s
+
+running (1m22.0s), 001/240 VUs, 14577 complete and 0 interrupted iterations
+brute_forcer   ✓ [ 100% ] 10 VUs       1m20s
+normal_traffic ↓ [ 100% ] 009/200 VUs  1m20s
+sneaky_spiker  ✓ [ 100% ] 30 VUs       1m20s
+
+
+  █ THRESHOLDS 
+
+    http_req_duration
+    ✓ 'p(95)<200' p(95)=4.87ms
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 13768  167.097119/s
+    checks_succeeded...: 44.21% 6088 out of 13768
+    checks_failed......: 55.78% 7680 out of 13768
+
+    ✗ brute gets 429 blocked
+      ↳  0% — ✓ 0 / ✗ 7680
+    ✓ normal users get 200 OK
+
+    HTTP
+    http_req_duration..............: avg=3.41ms min=787.33µs med=1.73ms   max=153.08ms p(90)=3.4ms p(95)=4.87ms
+      { expected_response:true }...: avg=3.41ms min=787.33µs med=1.73ms   max=153.08ms p(90)=3.4ms p(95)=4.87ms
+    http_req_failed................: 0.00%  0 out of 14578
+    http_reqs......................: 14578  176.927789/s
+
+    EXECUTION
+    iteration_duration.............: avg=1.06s  min=100.93ms med=106.67ms max=3.15s    p(90)=2.78s p(95)=3s    
+    iterations.....................: 14578  176.927789/s
+    vus............................: 1      min=1          max=240
+    vus_max........................: 240    min=240        max=240
+
+    NETWORK
+    data_received..................: 3.6 MB 43 kB/s
+    data_sent......................: 3.6 MB 44 kB/s
+
+
+
+
+running (1m22.4s), 000/240 VUs, 14578 complete and 0 interrupted iterations
+brute_forcer   ✓ [ 100% ] 10 VUs       1m20s
+normal_traffic ✓ [ 100% ] 000/200 VUs  1m20s
+sneaky_spiker  ✓ [ 100% ] 30 VUs       1m20s
