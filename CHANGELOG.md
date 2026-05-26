@@ -20,3 +20,4 @@ All notable changes to the Viridis project will be documented in this file in ch
 16. `608fecb` [+] Implement Azure IaC Bicep templates for Container Apps
 17. `755c830` [+] Implement GitHub Actions CI/CD pipeline
 18. `3cbe71d` [+] pre-fix commit before pytest issues fix
+19. `37d3b79` [+] fix pytest import error and update status code assertion
