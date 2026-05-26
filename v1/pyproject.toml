@@ -2,7 +2,7 @@
 name = "viridis"
 version = "0.1.0"
 description = "API Admission & Abuse Governance Engine"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 dependencies = [
     "fastapi>=0.111.0",
     "uvicorn[standard]>=0.30.1",
