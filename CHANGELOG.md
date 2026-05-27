@@ -22,3 +22,4 @@ All notable changes to the Viridis project will be documented in this file in ch
 18. `3cbe71d` [+] pre-fix commit before pytest issues fix
 19. `37d3b79` [+] fix pytest import error and update status code assertion
 20. `6e2edbc` [+] implement key hashing offloading, audit log partitioning migration, and DB fallback circuit breaker
+21. `5936558` [+] add GCP IaC layer using Terraform (VPC, Memorystore Redis, Cloud SQL, Secret Manager, and Cloud Run)
