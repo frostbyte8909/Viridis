@@ -1,0 +1,54 @@
+name: CI/CD Deployment
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  PROJECT_ID: "viridis-production"
+  REGION: "us-central1"
+  SERVICE_NAME: "viridis-gateway"
+  GAR_LOCATION: "us-central1-docker.pkg.dev"
+  REPOSITORY: "viridis-repo"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: 'read'
+      id-token: 'write' # Required for Workload Identity Federation
+
+    steps:
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+
+    - name: Google Auth
+      id: auth
+      uses: google-github-actions/auth@71f986410dfbc7added4569d411d040a91dc6935
+      with:
+        workload_identity_provider: '${{ secrets.WIF_PROVIDER }}'
+        service_account: '${{ secrets.WIF_SERVICE_ACCOUNT }}'
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@98ddc00a17442e89a24bbf282954a3b65ce6d200
+
+    - name: Configure Docker to use Google Artifact Registry
+      run: |
+        gcloud auth configure-docker $GAR_LOCATION
+
+    - name: Build and Push Docker Image
+      working-directory: ./v1
+      run: |
+        IMAGE_NAME="$GAR_LOCATION/$PROJECT_ID/$REPOSITORY/$SERVICE_NAME:${{ github.sha }}"
+        docker build -t $IMAGE_NAME .
+        docker push $IMAGE_NAME
+
+    - name: Deploy to Cloud Run
+      run: |
+        IMAGE_NAME="$GAR_LOCATION/$PROJECT_ID/$REPOSITORY/$SERVICE_NAME:${{ github.sha }}"
+        gcloud run deploy $SERVICE_NAME \
+          --image $IMAGE_NAME \
+          --region $REGION \
+          --project $PROJECT_ID \
+          --quiet
