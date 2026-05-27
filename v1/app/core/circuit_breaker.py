@@ -5,7 +5,7 @@ import asyncio
 logger = logging.getLogger(__name__)
 
 class CircuitBreaker:
-    def __init__(self, failure_threshold: int = 5, recovery_timeout: int = 30):
+    def __init__(self, failure_threshold: int = 5, recovery_timeout: int = 30) -> None:
         self.failure_threshold = failure_threshold
         self.recovery_timeout = recovery_timeout
         self.failure_count = 0

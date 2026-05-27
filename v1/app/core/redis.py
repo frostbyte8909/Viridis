@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import Dict
 from redis.asyncio import Redis, from_url
 from redis.client import Script
@@ -25,7 +26,7 @@ class RedisManager:
         if not self.redis:
             return
 
-        import os
+
         scripts_dir = os.path.join(os.path.dirname(__file__), "..", "scripts")
         
         try:

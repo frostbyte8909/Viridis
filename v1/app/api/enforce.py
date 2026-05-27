@@ -1,3 +1,4 @@
+import asyncio
 import hashlib
 import uuid
 from fastapi.responses import JSONResponse
@@ -9,6 +10,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.decision import make_decision
 from app.config import settings
 from app.db.session import get_db
+from app.core.policy_cache import get_policy
+from app.core.concurrency import release_concurrency
 
 router = APIRouter(prefix="/v1", tags=["Enforcement"])
 
@@ -17,10 +20,6 @@ class AdmitRequest(BaseModel):
     method: Literal["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"]
     client_ip: Optional[str] = None
     trace_id: Optional[str] = None
-
-
-
-import asyncio
 
 def _hash_key_sync(raw_key: str, pepper: str) -> str:
     return hashlib.sha256(f"{raw_key}{pepper}".encode()).hexdigest()
@@ -33,7 +32,7 @@ async def admit(
     background_tasks: BackgroundTasks,
     authorization: str = Header(None),
     db: AsyncSession = Depends(get_db)
-):
+) -> JSONResponse:
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Missing or invalid Authorization header")
     
@@ -74,10 +73,7 @@ async def release(
     req: ReleaseRequest,
     authorization: str = Header(None),
     db: AsyncSession = Depends(get_db)
-):
-    from app.core.policy_cache import get_policy
-    from app.core.concurrency import release_concurrency
-    
+) -> dict:
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Missing or invalid Authorization header")
     
