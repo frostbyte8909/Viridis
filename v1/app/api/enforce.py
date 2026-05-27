@@ -1,7 +1,7 @@
 import hashlib
 import uuid
-from fastapi import APIRouter, Depends, Header, HTTPException, Request
 from fastapi.responses import JSONResponse
+from fastapi import APIRouter, Depends, Header, HTTPException, Request, BackgroundTasks
 from pydantic import BaseModel, Field
 from typing import Literal, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -30,6 +30,7 @@ def _hash_key_sync(raw_key: str, pepper: str) -> str:
 async def admit(
     req: AdmitRequest,
     request: Request,
+    background_tasks: BackgroundTasks,
     authorization: str = Header(None),
     db: AsyncSession = Depends(get_db)
 ):
@@ -50,7 +51,8 @@ async def admit(
         method=req.method,
         client_ip=client_ip,
         request_id=trace_id,
-        db=db
+        db=db,
+        background_tasks=background_tasks
     )
     
     # HTTP Status mapping
@@ -63,3 +65,28 @@ async def admit(
         status_code = 202
         
     return JSONResponse(content=decision, status_code=status_code)
+
+class ReleaseRequest(BaseModel):
+    trace_id: str
+
+@router.post("/release")
+async def release(
+    req: ReleaseRequest,
+    authorization: str = Header(None),
+    db: AsyncSession = Depends(get_db)
+):
+    from app.core.policy_cache import get_policy
+    from app.core.concurrency import release_concurrency
+    
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Missing or invalid Authorization header")
+    
+    raw_key = authorization.split(" ")[1]
+    key_hash = await asyncio.to_thread(_hash_key_sync, raw_key, settings.server_pepper)
+    
+    policy = await get_policy(key_hash, db)
+    if not policy:
+        raise HTTPException(status_code=403, detail="Invalid API Key")
+        
+    await release_concurrency(policy["key_id"], req.trace_id)
+    return {"status": "ok", "message": "Concurrency slot released"}

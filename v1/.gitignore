@@ -8,3 +8,13 @@ __pycache__/
 venv/
 .venv/
 *.log
+
+# Secrets and Local Overrides
+.env*
+key.txt
+
+# Terraform
+*.tfstate
+*.tfstate.backup
+.terraform/
+*.tfvars

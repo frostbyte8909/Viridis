@@ -30,4 +30,9 @@ async def create_tenant(req: CreateTenantReq, db: AsyncSession = Depends(get_db)
     await db.refresh(tenant)
     return {"id": tenant.id, "name": tenant.name}
 
+@router.post("/cache/invalidate/{key_hash}", dependencies=[Depends(require_admin_token)])
+async def invalidate_cache(key_hash: str):
+    await invalidate_policy(key_hash)
+    return {"status": "ok", "message": "Cache invalidated"}
+
 # (Other CRUD endpoints for Plans, Overrides would go here)
