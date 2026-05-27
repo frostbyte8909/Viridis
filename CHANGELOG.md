@@ -24,3 +24,4 @@ All notable changes to the Viridis project will be documented in this file in ch
 20. `6e2edbc` [+] implement key hashing offloading, audit log partitioning migration, and DB fallback circuit breaker
 21. `5936558` [+] add GCP IaC layer using Terraform (VPC, Memorystore Redis, Cloud SQL, Secret Manager, and Cloud Run)
 22. `0e18f57` [+] Pre-change commit
+23. `f5e685b` [+] Security fixes: C-01, H-01, H-02, H-03, H-04, M-01, M-03
