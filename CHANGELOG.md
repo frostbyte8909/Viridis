@@ -26,3 +26,4 @@ All notable changes to the Viridis project will be documented in this file in ch
 22. `0e18f57` [+] Pre-change commit
 23. `f5e685b` [+] Security fixes: C-01, H-01, H-02, H-03, H-04, M-01, M-03
 24. `e2215ba` [+] Security fixes: C-02, C-03, C-05, C-06, C-07, H-05, H-06, H-07, H-08, H-09, H-10, H-11, M-05, M-06, M-07, M-08, M-09, M-10, M-11
+25. `1d2c166` [+] chore: Restore and secure CI/CD deployment pipeline
