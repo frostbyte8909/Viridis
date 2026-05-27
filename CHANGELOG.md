@@ -28,3 +28,4 @@ All notable changes to the Viridis project will be documented in this file in ch
 24. `e2215ba` [+] Security fixes: C-02, C-03, C-05, C-06, C-07, H-05, H-06, H-07, H-08, H-09, H-10, H-11, M-05, M-06, M-07, M-08, M-09, M-10, M-11
 25. `1d2c166` [+] chore: Restore and secure CI/CD deployment pipeline
 26. `1302c45` [+] Create codeql.yml
+27. `5bc6d94` [+] ci: fix github action paths, node 20 deprecation warnings, and missing python version
