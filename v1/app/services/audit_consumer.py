@@ -43,7 +43,6 @@ async def batch_write_audit_logs(events: List[Dict[str, Any]]) -> None:
         except Exception as e:
             logger.error(f"Failed to write audit batch to DB: {e}")
             await session.rollback()
-            raise
 
 async def run_audit_consumer() -> None:
     """Runs continuously in the background to consume from Redis Streams."""

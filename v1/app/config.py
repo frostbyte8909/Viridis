@@ -2,10 +2,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    database_url: str
-    redis_url: str
-    admin_token: str
-    server_pepper: str
+    database_url: str = "REDACTED_DB_URL"
+    redis_url: str = "redis://localhost:6379/0"
+    admin_token: str = "dev_admin_token"
+    server_pepper: str = "dev_server_pepper"
     mode: str = "normal"  # normal, degraded, maintenance
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")

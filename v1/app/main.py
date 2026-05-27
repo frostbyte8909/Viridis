@@ -5,6 +5,7 @@ import asyncio
 from app.config import settings
 from app.api.admin import router as admin_router
 from app.api.enforce import router as enforce_router
+from app.api.demo import router as demo_router
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.redis import redis_manager
 from app.services.audit_consumer import run_audit_consumer
@@ -26,13 +27,11 @@ app = FastAPI(
 
 app.include_router(admin_router)
 app.include_router(enforce_router)
+app.include_router(demo_router, prefix="/v1/demo", tags=["demo"])
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "https://viridis.admin.dashboard"
-    ],
+    allow_origins=["*"], # Allow all origins for the local dashboard
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

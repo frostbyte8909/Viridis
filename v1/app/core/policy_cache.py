@@ -25,7 +25,7 @@ async def get_policy(key_hash: str, db: AsyncSession) -> Optional[Dict[str, Any]
     # 2. Fetch from DB (Guarded by Circuit Breaker)
     from app.core.circuit_breaker import db_circuit_breaker
     
-    if not await db_circuit_breaker.allow_request():
+    if not db_circuit_breaker.allow_request():
         logger.warning(f"Database circuit breaker is OPEN. Skipping DB fallback for key: {key_hash}")
         return None
 
@@ -38,7 +38,7 @@ async def get_policy(key_hash: str, db: AsyncSession) -> Optional[Dict[str, Any]
         row = result.first()
         
         if not row:
-            await db_circuit_breaker.record_success()
+            db_circuit_breaker.record_success()
             return None
             
         api_key, plan = row
@@ -48,9 +48,9 @@ async def get_policy(key_hash: str, db: AsyncSession) -> Optional[Dict[str, Any]
             select(Override)
             .where(Override.api_key_id == api_key.id)
         )
-        await db_circuit_breaker.record_success()
+        db_circuit_breaker.record_success()
     except Exception as e:
-        await db_circuit_breaker.record_failure()
+        db_circuit_breaker.record_failure()
         logger.error(f"Database fallback query failed: {e}")
         raise e
     active_override = "NONE"

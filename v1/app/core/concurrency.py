@@ -15,31 +15,20 @@ async def check_and_acquire_concurrency(
     zset_key = f"viridis:inflight:{key_id}"
     now = time.time()
     
+    # 1. Remove dead requests (score < now)
+    await r.zremrangebyscore(zset_key, "-inf", now)
+    
+    # 2. Check current active count
+    count = await r.zcard(zset_key)
+    if count >= max_concurrency:
+        return False
+        
+    # 3. Add current request with expiry
     expiry = now + ttl_seconds
+    await r.zadd(zset_key, {request_id: expiry})
+    await r.expire(zset_key, ttl_seconds + 5)
     
-    lua_script = """
-    redis.call('zremrangebyscore', KEYS[1], '-inf', ARGV[1])
-    local count = redis.call('zcard', KEYS[1])
-    if tonumber(count) >= tonumber(ARGV[2]) then
-        return 0
-    end
-    redis.call('zadd', KEYS[1], ARGV[3], ARGV[4])
-    redis.call('expire', KEYS[1], ARGV[5])
-    return 1
-    """
-    
-    result = await r.eval(
-        lua_script,
-        1,
-        zset_key,
-        now,
-        max_concurrency,
-        expiry,
-        request_id,
-        ttl_seconds + 5
-    )
-    
-    return bool(result)
+    return True
 
 async def release_concurrency(key_id: str, request_id: str) -> None:
     """Removes a request from the concurrency ZSET."""

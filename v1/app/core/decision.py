@@ -1,5 +1,4 @@
 import time
-from fastapi import BackgroundTasks
 from typing import Dict, Any, Tuple
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -17,8 +16,7 @@ async def make_decision(
     method: str,
     client_ip: str,
     request_id: str,
-    db: AsyncSession,
-    background_tasks: BackgroundTasks
+    db: AsyncSession
 ) -> Dict[str, Any]:
     """
     Orchestrates the fail-fast enforcement logic.
@@ -41,7 +39,7 @@ async def make_decision(
             "client_ip": client_ip,
             **kwargs
         }
-        background_tasks.add_task(publish_audit_event, event)
+        asyncio.create_task(publish_audit_event(event))
         
         return {
             "decision": decision,

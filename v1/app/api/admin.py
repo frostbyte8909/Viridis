@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlalchemy.ext.asyncio import AsyncSession
-from pydantic import BaseModel, Field
-from typing import Literal
-import hmac
+from pydantic import BaseModel
+
 from app.db.session import get_db
 from app.config import settings
 from app.services.key_service import issue_raw_key, create_api_key_record
@@ -12,15 +11,12 @@ from app.models.db import Tenant, Plan
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
 def require_admin_token(authorization: str = Header(None)) -> None:
-    if not authorization:
-        raise HTTPException(status_code=401, detail="Invalid admin token")
-    expected_token = f"Bearer {settings.admin_token}"
-    if not hmac.compare_digest(authorization, expected_token):
+    if not authorization or authorization != f"Bearer {settings.admin_token}":
         raise HTTPException(status_code=401, detail="Invalid admin token")
 
 class CreateTenantReq(BaseModel):
-    name: str = Field(..., max_length=100)
-    tier: Literal["free", "pro", "enterprise"]
+    name: str
+    tier: str
 
 @router.post("/tenants", dependencies=[Depends(require_admin_token)])
 async def create_tenant(req: CreateTenantReq, db: AsyncSession = Depends(get_db)):
@@ -29,10 +25,5 @@ async def create_tenant(req: CreateTenantReq, db: AsyncSession = Depends(get_db)
     await db.commit()
     await db.refresh(tenant)
     return {"id": tenant.id, "name": tenant.name}
-
-@router.post("/cache/invalidate/{key_hash}", dependencies=[Depends(require_admin_token)])
-async def invalidate_cache(key_hash: str):
-    await invalidate_policy(key_hash)
-    return {"status": "ok", "message": "Cache invalidated"}
 
 # (Other CRUD endpoints for Plans, Overrides would go here)

@@ -12,10 +12,8 @@ def issue_raw_key() -> str:
     return f"viridis_{base58.b58encode(random_bytes).decode('utf-8')}"
 
 def hash_key(raw_key: str) -> str:
-    """Hashes the raw key using PBKDF2-HMAC-SHA256 and the server pepper."""
-    salt = settings.server_pepper.encode()
-    key_material = raw_key.encode()
-    return hashlib.pbkdf2_hmac('sha256', key_material, salt, 100000).hex()
+    """Hashes the raw key using SHA-256 and the server pepper."""
+    return hashlib.sha256(f"{raw_key}{settings.server_pepper}".encode()).hexdigest()
 
 def create_api_key_record(tenant_id: uuid.UUID, plan_id: uuid.UUID, raw_key: str) -> ApiKey:
     """Creates an ApiKey ORM model from a raw key."""
