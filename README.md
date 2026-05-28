@@ -15,50 +15,7 @@ Viridian is a high-performance, asynchronous admission control microservice desi
 
 Viridian utilizes a dual-layer Redis shield to protect downstream systems from connection saturation and enforces multi-dimensional rate limiting via atomic Redis Lua scripts.
 
-```mermaid
-flowchart TD
-    classDef client fill:#3b82f6,stroke:#1d4ed8,color:white,stroke-width:2px,rx:5px,ry:5px
-    classDef fastapiserver fill:#10b981,stroke:#047857,color:white,stroke-width:2px,rx:5px,ry:5px
-    classDef redis fill:#ef4444,stroke:#b91c1c,color:white,stroke-width:2px,rx:5px,ry:5px
-    classDef db fill:#8b5cf6,stroke:#6d28d9,color:white,stroke-width:2px,rx:5px,ry:5px
-    classDef worker fill:#f59e0b,stroke:#b45309,color:white,stroke-width:2px,rx:5px,ry:5px
-
-    Client(("Incoming Traffic\n(Legitimate & Bots)")):::client
-    LoadBalancer["Container Apps\n(Load Balancer)"]:::client
-    
-    subgraph "Admission Gateway"
-        API["Viridian API\n(Async HTTP)"]:::fastapiserver
-        Orchestrator["Decision Engine\n(Pipeline Router)"]:::fastapiserver
-    end
-
-    subgraph "Rate Limiting Shield"
-        Redis["Redis Cache"]:::redis
-        IPLimit["Lua: Sliding Window\n(IP Address)"]:::redis
-        TokenLimit["Lua: Token Bucket\n(API Key)"]:::redis
-    end
-
-    subgraph "Persistence Layer"
-        Postgres[(PostgreSQL)]:::db
-        Trigger[/"PL/pgSQL Trigger\n(Immutability Lock)"/]:::db
-        AuditLog[["audit_log Table\n(Append Only)"]]:::db
-    end
-
-    Client -- "HTTP POST\n/v1/admit" --> LoadBalancer
-    LoadBalancer --> API
-    API --> Orchestrator
-    
-    Orchestrator -- "1. Check IP Quota" --> IPLimit
-    IPLimit -. "In-Memory Eval" .-> Redis
-    Orchestrator -- "2. Check Token Quota" --> TokenLimit
-    TokenLimit -. "In-Memory Eval" .-> Redis
-
-    Orchestrator -- "3. Async Insert" --> Postgres
-    Postgres --> Trigger
-    Trigger -- "Validate & Lock" --> AuditLog
-
-    Orchestrator -- "4. Admit / Reject" --> API
-    API -- "HTTP 200 (Admit)\nHTTP 429 (Reject)" --> Client
-```
+![Architecture Diagram](architecture.png)
 
 ## Core Mechanisms
 
