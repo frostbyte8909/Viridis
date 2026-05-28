@@ -12,6 +12,9 @@ env:
   GAR_LOCATION: "us-central1-docker.pkg.dev"
   REPOSITORY: "viridis-repo"
 
+permissions:
+  contents: read
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
