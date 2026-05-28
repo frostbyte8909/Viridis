@@ -37,3 +37,4 @@ All notable changes to the Viridis project will be documented in this file in ch
 33. `1dca371` [+] docs: rewrite root README with professional FAANG-style formatting
 34. `a76f361` [+] docs: add banner image
 35. `2519e2d` [+] docs: replace mermaid diagram with architecture image
+36. `a963801` [+] docs: add medium article link and caption to architecture diagram
