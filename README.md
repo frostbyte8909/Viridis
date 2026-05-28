@@ -1,23 +1,23 @@
 <p align="center">
-  <img src="banner.png" alt="Viridian Banner" width="100%">
+  <img src="banner.png" alt="Viridis Banner" width="100%">
 </p>
 
-# Viridian — Admission Controller & Rate Limiting Gateway
+# Viridis — Admission Controller & Rate Limiting Gateway
 
 [![Build Status](https://github.com/frostbyte8909/Viridis/actions/workflows/pr-checks.yml/badge.svg)](https://github.com/frostbyte8909/Viridis/actions)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python Version](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/)
 [![Code Style: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-Viridian is a high-performance, asynchronous admission control microservice designed to intercept upstream traffic and perform instantaneous, atomic rate-limiting before forwarding requests to internal microservices.
+Viridis is a high-performance, asynchronous admission control microservice designed to intercept upstream traffic and perform instantaneous, atomic rate-limiting before forwarding requests to internal microservices.
 
 ## Architecture Design
 
-Viridian utilizes a dual-layer Redis shield to protect downstream systems from connection saturation and enforces multi-dimensional rate limiting via atomic Redis Lua scripts.
+Viridis utilizes a dual-layer Redis shield to protect downstream systems from connection saturation and enforces multi-dimensional rate limiting via atomic Redis Lua scripts.
 
 ![Architecture Diagram](architecture.png)
 
-*For a comprehensive, deep-dive architectural overview and system write-up, please read the [official Viridian Architectural Overview](https://medium.com/@palash.shukla/viridis-architectural-overview-60b704049a09) on Medium.*
+*For a comprehensive, deep-dive architectural overview and system write-up, please read the [official Viridis Architectural Overview](https://medium.com/@palash.shukla/viridis-architectural-overview-60b704049a09) on Medium.*
 
 ## Core Mechanisms
 
