@@ -31,3 +31,4 @@ All notable changes to the Viridis project will be documented in this file in ch
 27. `5bc6d94` [+] ci: fix github action paths, node 20 deprecation warnings, and missing python version
 28. `80324de` [+] fix: resolve codeql alerts, add strict pydantic types, and clean up code quality issues
 29. `f21394f` [+] ci: enforce workflow permissions
+30. `28c7ba8` [+] fix: resolve pydantic url casting bug and strengthen HMAC derivation for codeql
