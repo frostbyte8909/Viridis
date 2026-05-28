@@ -17,6 +17,8 @@ Viridian utilizes a dual-layer Redis shield to protect downstream systems from c
 
 ![Architecture Diagram](architecture.png)
 
+*For a comprehensive, deep-dive architectural overview and system write-up, please read the [official Viridian Architectural Overview](https://medium.com/@palash.shukla/viridis-architectural-overview-60b704049a09) on Medium.*
+
 ## Core Mechanisms
 
 * **Atomic Rate Limiting**: All threshold checks (Token Bucket, Sliding Window) are executed as atomic Lua scripts within Redis. This completely eliminates Race Conditions and Time-Of-Check to Time-Of-Use vulnerabilities.
