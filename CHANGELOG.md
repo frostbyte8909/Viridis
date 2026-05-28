@@ -35,3 +35,4 @@ All notable changes to the Viridis project will be documented in this file in ch
 31. `d678314` [+] fix: resolve redis type hint import and definitively satisfy codeql hashing rule
 32. `3aae5f4` [+] Merge pull request #14 from frostbyte8909/feature/pr-checks
 33. `1dca371` [+] docs: rewrite root README with professional FAANG-style formatting
+34. `a76f361` [+] docs: add banner image
