@@ -1,85 +1,75 @@
-<div align="center">
-  <h1>Project Viridis 🛡️</h1>
-  <p><b>High-Performance, Asynchronous Admission Controller & Rate Limiting Gateway</b></p>
-  <p>Built with FastAPI, Redis Lua, PostgreSQL, and Azure Container Apps.</p>
-</div>
+<p align="center">
+  <img src="banner.png" alt="Viridian Banner" width="100%">
+</p>
 
-<hr/>
+# Viridian — Admission Controller & Rate Limiting Gateway
 
-## 🏗️ Architecture Design
+[![Build Status](https://github.com/frostbyte8909/Viridis/actions/workflows/pr-checks.yml/badge.svg)](https://github.com/frostbyte8909/Viridis/actions)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Python Version](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/)
+[![Code Style: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-Viridis is designed to intercept upstream traffic and perform instantaneous, atomic rate-limiting before forwarding the traffic to internal microservices. It utilizes a dual-layer Redis shield to protect downstream databases from connection saturation.
+Viridian is a high-performance, asynchronous admission control microservice designed to intercept upstream traffic and perform instantaneous, atomic rate-limiting before forwarding requests to internal microservices.
+
+## Architecture Design
+
+Viridian utilizes a dual-layer Redis shield to protect downstream systems from connection saturation and enforces multi-dimensional rate limiting via atomic Redis Lua scripts.
 
 ```mermaid
 flowchart TD
-    %% Define Styles
     classDef client fill:#3b82f6,stroke:#1d4ed8,color:white,stroke-width:2px,rx:5px,ry:5px
     classDef fastapiserver fill:#10b981,stroke:#047857,color:white,stroke-width:2px,rx:5px,ry:5px
     classDef redis fill:#ef4444,stroke:#b91c1c,color:white,stroke-width:2px,rx:5px,ry:5px
     classDef db fill:#8b5cf6,stroke:#6d28d9,color:white,stroke-width:2px,rx:5px,ry:5px
     classDef worker fill:#f59e0b,stroke:#b45309,color:white,stroke-width:2px,rx:5px,ry:5px
 
-    %% Nodes
     Client(("Incoming Traffic\n(Legitimate & Bots)")):::client
-    LoadBalancer["Azure Container Apps\n(Load Balancer)"]:::client
+    LoadBalancer["Container Apps\n(Load Balancer)"]:::client
     
-    subgraph "Admission Gateway (FastAPI)"
-        API["Viridis API\n(Async HTTP)"]:::fastapiserver
+    subgraph "Admission Gateway"
+        API["Viridian API\n(Async HTTP)"]:::fastapiserver
         Orchestrator["Decision Engine\n(Pipeline Router)"]:::fastapiserver
     end
 
-    subgraph "Rate Limiting Shield (In-Memory)"
+    subgraph "Rate Limiting Shield"
         Redis["Redis Cache"]:::redis
-        IPLimit["Lua: Sliding Window\n(by IP Address)"]:::redis
-        TokenLimit["Lua: Token Bucket\n(by API Key)"]:::redis
+        IPLimit["Lua: Sliding Window\n(IP Address)"]:::redis
+        TokenLimit["Lua: Token Bucket\n(API Key)"]:::redis
     end
 
-    subgraph "Compliance & Persistence"
-        Postgres[(PostgreSQL\nFlexible Server)]:::db
+    subgraph "Persistence Layer"
+        Postgres[(PostgreSQL)]:::db
         Trigger[/"PL/pgSQL Trigger\n(Immutability Lock)"/]:::db
         AuditLog[["audit_log Table\n(Append Only)"]]:::db
     end
 
-    %% Connections
     Client -- "HTTP POST\n/v1/admit" --> LoadBalancer
     LoadBalancer --> API
     API --> Orchestrator
     
-    %% Redis interactions
     Orchestrator -- "1. Check IP Quota" --> IPLimit
     IPLimit -. "In-Memory Eval" .-> Redis
     Orchestrator -- "2. Check Token Quota" --> TokenLimit
     TokenLimit -. "In-Memory Eval" .-> Redis
 
-    %% Postgres interactions
     Orchestrator -- "3. Async Insert" --> Postgres
     Postgres --> Trigger
     Trigger -- "Validate & Lock" --> AuditLog
 
-    %% Return flow
     Orchestrator -- "4. Admit / Reject" --> API
     API -- "HTTP 200 (Admit)\nHTTP 429 (Reject)" --> Client
 ```
 
----
+## Core Mechanisms
 
-## 🚦 Live Rate Limiting in Action
+* **Atomic Rate Limiting**: All threshold checks (Token Bucket, Sliding Window) are executed as atomic Lua scripts within Redis. This completely eliminates Race Conditions and Time-Of-Check to Time-Of-Use vulnerabilities.
+* **Asynchronous I/O**: Built on FastAPI and an entirely non-blocking asynchronous event loop to maximize throughput.
+* **Schema Validation**: API inputs and configurations are rigorously validated via Pydantic schema enforcement.
+* **Audit Immutability**: All admission decisions are permanently logged to PostgreSQL. A `PL/pgSQL` trigger enforces an append-only guarantee, blocking all UPDATE or DELETE attempts at the database engine level.
 
-Because rate limiting checks are pushed down directly into the Redis engine via **atomic Lua scripts**, the system completely avoids Race Conditions (Time-Of-Check to Time-Of-Use vulnerabilities).
+## Performance Benchmarks
 
-> 🎥 *Below is a live demonstration of a user exceeding their Token Bucket quota. Notice the instantaneous cutoff generated by the Decision Engine.*
-
-![Live Rate Limiting Demo](demo_v1/recordings/rate_limiter_action.png)
-
-*(To reproduce this test locally, run `bash demo_v1/recordings/trigger_rate_limit.sh`)*
-
----
-
-## ⚡ Performance & Concurrency Benchmarks
-
-Viridis is built on a fully asynchronous event loop. In stress tests utilizing `k6`, the framework successfully routed highly concurrent traffic with **zero dropped connections** and sub-5ms latencies.
-
-**Load Test Profile:** `k6` simulation of a peak-traffic SaaS application (1,000 distinct users, 240 active concurrent sessions, mix of human traffic and aggressive botnets).
+Stress testing utilizing `k6` to simulate a highly concurrent production workload (1,000 distinct users, 240 active concurrent sessions).
 
 ```text
   █ TOTAL RESULTS 
@@ -87,7 +77,7 @@ Viridis is built on a fully asynchronous event loop. In stress tests utilizing `
     ✓ 'p(95)<200' p(95)=4.87ms
 
     checks_total.......: 13768  167.097119/s
-    checks_failed......: 55.78% (Expected: Scrapers successfully blocked by 429s)
+    checks_failed......: 55.78% 
 
     HTTP
     http_req_duration..............: avg=3.41ms min=787.33µs med=1.73ms   max=153.08ms p(90)=3.4ms p(95)=4.87ms
@@ -99,18 +89,32 @@ Viridis is built on a fully asynchronous event loop. In stress tests utilizing `
     vus_max........................: 240    min=240        max=240
 ```
 
----
+## Cloud & DevOps Readiness
 
-## 📖 Interactive API Documentation
+* **Continuous Integration**: Multi-stage GitHub Actions pipelines enforcing linting, testing, and comprehensive CodeQL security scanning.
+* **Infrastructure as Code**: Terraform configurations defining Cloud Run, PostgreSQL, and Redis environments.
+* **Containerization**: Optimized multistage Dockerfiles for minimal production attack surface.
 
-The API uses **Pydantic** for rigorous schema validation. The frontend Swagger UI is auto-generated by FastAPI.
+## Contributing
 
-![Swagger UI Interactive Docs](demo_v1/screenshots/swagger_interactive.png)
+We welcome community contributions. To ensure a standardized development process, please adhere to the following guidelines.
 
----
+### Submitting Feature Recommendations & Bug Reports
 
-## ☁️ Cloud & DevOps Readiness
-This project utilizes a modern DevOps toolchain:
-- **CI/CD:** Multi-stage GitHub Actions pipeline (`lint`, `test`, `trivy` security scanning, `k6` staging smoke tests).
-- **IaC:** Azure Bicep templates defining Azure Container Apps Environments, PostgreSQL Flexible Servers, and Premium Redis Caches.
-- **Compliance:** Alembic-managed database schema with `PL/pgSQL` immutability triggers.
+Before writing code, initiate a discussion via the issue tracker:
+1. Navigate to the **Issues** tab.
+2. Search existing issues to prevent duplication.
+3. Open a new issue with a concise title and detailed description. For bugs, include reproducible steps. For features, provide the architectural rationale and impact analysis.
+
+### Development Workflow
+
+1. **Fork the Repository**: Create a personal fork of the repository.
+2. **Branching Strategy**: Create an isolated branch for your work (`git checkout -b feature/your-feature-name` or `bugfix/issue-description`).
+3. **Implementation**: Develop your changes. All Python code must comply with the repository's strict linting and typing standards. Run `ruff check .` and `mypy app` prior to committing.
+4. **Testing**: Write comprehensive unit tests for all new business logic. Validate the suite using `pytest`.
+5. **Commit Conventions**: Use standardized, descriptive commit messages (e.g., `feat: implement token bucket`, `fix: resolve race condition in cache`).
+6. **Pull Requests**: Submit a PR targeting the `main` branch. Ensure the PR description directly links to the relevant issue and outlines the verification steps performed.
+
+## License
+
+This project is licensed under the Apache License 2.0. See the `LICENSE` file for details.
