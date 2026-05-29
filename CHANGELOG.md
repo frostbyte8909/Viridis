@@ -39,3 +39,4 @@ All notable changes to the Viridis project will be documented in this file in ch
 35. `2519e2d` [+] docs: replace mermaid diagram with architecture image
 36. `a963801` [+] docs: add medium article link and caption to architecture diagram
 37. `dd8dcb1` [+] docs: rename project from viridian to viridis
+38. `c5a4050` [+] feat: implement per-key limits, quota API, and audit export
