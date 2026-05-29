@@ -1,3 +1,4 @@
+# ruff: noqa: E402
 import asyncio
 from logging.config import fileConfig
 
@@ -47,9 +48,9 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url")
+    # url = config.get_main_option("sqlalchemy.url")
     context.configure(
-        url=settings.database_url,
+        url=str(settings.database_url),
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
@@ -73,7 +74,7 @@ async def run_async_migrations() -> None:
     """
 
     configuration = config.get_section(config.config_ini_section, {})
-    configuration["sqlalchemy.url"] = settings.database_url
+    configuration["sqlalchemy.url"] = str(settings.database_url)
     connectable = async_engine_from_config(
         configuration,
         prefix="sqlalchemy.",

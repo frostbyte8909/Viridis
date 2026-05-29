@@ -55,6 +55,18 @@ class ApiKey(Base):
     tenant: Mapped["Tenant"] = relationship("Tenant", back_populates="api_keys")
 
 
+class ApiKeyLimitOverride(Base):
+    __tablename__ = "api_key_limit_overrides"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    api_key_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("api_keys.id"), unique=True, nullable=False)
+    requests_per_minute: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    burst_capacity: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    burst_refill_rate: Mapped[Optional[float]] = mapped_column(Numeric, nullable=True)
+    max_concurrency: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    cooldown_seconds: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
 class EndpointWeight(Base):
     __tablename__ = "endpoint_weights"
 

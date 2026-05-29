@@ -3,7 +3,7 @@ from typing import Optional, Dict, Any
 
 from app.core.circuit_breaker import db_circuit_breaker
 from app.core.redis import redis_manager
-from app.models.db import ApiKey, Plan, Override
+from app.models.db import ApiKey, Plan, Override, ApiKeyLimitOverride
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -30,8 +30,9 @@ async def get_policy(key_hash: str, db: AsyncSession) -> Optional[Dict[str, Any]
 
     try:
         result = await db.execute(
-            select(ApiKey, Plan)
+            select(ApiKey, Plan, ApiKeyLimitOverride)
             .join(Plan, ApiKey.plan_id == Plan.id)
+            .outerjoin(ApiKeyLimitOverride, ApiKey.id == ApiKeyLimitOverride.api_key_id)
             .where(ApiKey.key_hash == key_hash)
         )
         row = result.first()
@@ -40,7 +41,7 @@ async def get_policy(key_hash: str, db: AsyncSession) -> Optional[Dict[str, Any]
             await db_circuit_breaker.record_success()
             return None
             
-        api_key, plan = row
+        api_key, plan, limit_override = row
     
         # Gather hard overrides
         overrides = await db.execute(
@@ -57,16 +58,22 @@ async def get_policy(key_hash: str, db: AsyncSession) -> Optional[Dict[str, Any]
         active_override = override.override_type # e.g. HARD_DENY or HARD_ALLOW
         break
 
+    rpm = limit_override.requests_per_minute if limit_override and limit_override.requests_per_minute is not None else plan.requests_per_minute
+    burst = limit_override.burst_capacity if limit_override and limit_override.burst_capacity is not None else plan.burst_capacity
+    refill = limit_override.burst_refill_rate if limit_override and limit_override.burst_refill_rate is not None else plan.burst_refill_rate
+    conc = limit_override.max_concurrency if limit_override and limit_override.max_concurrency is not None else plan.max_concurrency
+    cool = limit_override.cooldown_seconds if limit_override and limit_override.cooldown_seconds is not None else plan.cooldown_seconds
+
     policy = {
         "key_id": str(api_key.id),
         "tenant_id": str(api_key.tenant_id),
         "is_active": str(api_key.is_active).lower(),
         "expires_at": str(api_key.expires_at.timestamp()) if api_key.expires_at else "0",
-        "requests_per_minute": str(plan.requests_per_minute),
-        "burst_capacity": str(plan.burst_capacity),
-        "burst_refill_rate": str(plan.burst_refill_rate),
-        "max_concurrency": str(plan.max_concurrency),
-        "cooldown_seconds": str(plan.cooldown_seconds),
+        "requests_per_minute": str(rpm),
+        "burst_capacity": str(burst),
+        "burst_refill_rate": str(refill),
+        "max_concurrency": str(conc),
+        "cooldown_seconds": str(cool),
         "tier": plan.tier,
         "override": active_override
     }

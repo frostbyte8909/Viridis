@@ -9,6 +9,8 @@ class Settings(BaseSettings):
     admin_token: str
     server_pepper: str
     mode: Literal["normal", "degraded", "maintenance"] = "normal"
+    trusted_proxies: list[str] = []
+    audit_retention_days: int = 0
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
