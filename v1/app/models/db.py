@@ -53,6 +53,7 @@ class ApiKey(Base):
     last_used_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
 
     tenant: Mapped["Tenant"] = relationship("Tenant", back_populates="api_keys")
+    limit_overrides: Mapped[Optional["ApiKeyLimitOverride"]] = relationship("ApiKeyLimitOverride", backref="api_key", uselist=False)
 
 
 class ApiKeyLimitOverride(Base):
@@ -95,7 +96,7 @@ class AuditLog(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     decision_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), server_default=text("gen_random_uuid()"), nullable=False)
-    api_key_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    api_key_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), index=True, nullable=False)
     tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
     endpoint_path: Mapped[str] = mapped_column(Text, nullable=False)
     method: Mapped[str] = mapped_column(Text, nullable=False)
@@ -122,4 +123,17 @@ class UsageRollup(Base):
     throttled: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
     denied: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
     avg_processing_ms: Mapped[Optional[float]] = mapped_column(Numeric, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+class WafFeatureWindow(Base):
+    __tablename__ = "waf_feature_windows"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    client_ip: Mapped[str] = mapped_column(Text, index=True, nullable=False)
+    request_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    error_density: Mapped[float] = mapped_column(Numeric, nullable=False)
+    endpoint_spread: Mapped[float] = mapped_column(Numeric, nullable=False)
+    method_diversity: Mapped[float] = mapped_column(Numeric, nullable=False)
+    temporal_variance: Mapped[float] = mapped_column(Numeric, nullable=False)
+    window_end: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
