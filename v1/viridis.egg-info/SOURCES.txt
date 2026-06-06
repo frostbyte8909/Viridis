@@ -1,0 +1,8 @@
+pyproject.toml
+app/config.py
+app/main.py
+viridis.egg-info/PKG-INFO
+viridis.egg-info/SOURCES.txt
+viridis.egg-info/dependency_links.txt
+viridis.egg-info/requires.txt
+viridis.egg-info/top_level.txt
