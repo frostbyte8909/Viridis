@@ -7,9 +7,11 @@ ENV PYTHONUNBUFFERED=1
 
 RUN pip install --no-cache-dir --upgrade pip
 COPY pyproject.toml .
+COPY alembic.ini .
+COPY app/ ./app/
 RUN pip install --no-cache-dir .
 
-COPY app/ ./app/
+
 
 # Create a non-root user
 RUN adduser --disabled-password --gecos '' appuser
