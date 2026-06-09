@@ -3,10 +3,11 @@ import { check, sleep } from 'k6';
 
 export const options = {
   stages: [
-    { duration: '10s', target: 5 },
-    { duration: '20s', target: 5 },
+    { duration: '10s', target: 50 },
+    { duration: '40s', target: 100 },
     { duration: '10s', target: 0 },
   ],
+  summaryTrendStats: ['avg', 'min', 'max', 'p(1)', 'p(95)', 'p(99)'],
   thresholds: {
     http_req_duration: ['p(95)<15'], // 95% of requests must complete below 15ms
   },
@@ -25,7 +26,7 @@ export default function () {
   const params = {
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer viridis_dummykey123',
+      'Authorization': 'Bearer viridis_qCe6iXsyw1M7DcCsDaZ8a4H5jAfEsDs4bxViVh5wtzE',
     },
   };
 
