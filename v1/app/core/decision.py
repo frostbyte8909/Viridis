@@ -99,6 +99,32 @@ async def make_decision(
     sw_allowed, sw_remaining, sw_retry = await check_sliding_window(
         key_id, 60, sustained_limit, request_id
     )
+    
+    current_usage = sustained_limit - sw_remaining
+    tenant_id = policy.get("tenant_id", "unknown")
+    
+    # Threshold Alert Logic
+    if sustained_limit > 0:
+        threshold_crossed = None
+        if current_usage >= sustained_limit:
+            threshold_crossed = "100"
+        elif current_usage >= sustained_limit * 0.8:
+            threshold_crossed = "80"
+            
+        if threshold_crossed:
+            alert_key = f"viridis:alert:{tenant_id}:{threshold_crossed}"
+            # Atomically set NX (only set if not exists), with 60s expiration
+            is_new_alert = await r.set(alert_key, "1", nx=True, ex=60)
+            if is_new_alert:
+                from app.services.alert_manager import dispatch_quota_alert
+                asyncio.create_task(dispatch_quota_alert(
+                    tenant_id=tenant_id,
+                    email="", # Configured implicitly or fetched if tenant details had email
+                    threshold=threshold_crossed,
+                    current_usage=current_usage,
+                    limit=sustained_limit
+                ))
+
     if not sw_allowed:
         return finalize("THROTTLE", "QUOTA_EXCEEDED", retry_after_seconds=sw_retry)
 
