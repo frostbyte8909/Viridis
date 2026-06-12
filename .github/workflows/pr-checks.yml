@@ -6,6 +6,9 @@ on:
   push:
     branches: [ "main" ]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   security-audit:
     runs-on: ubuntu-latest
@@ -26,12 +29,21 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
+        working-directory: ./v1
         run: |
           python -m pip install --upgrade pip
           pip install bandit pytest httpx pydantic fastapi
+          pip install -e ".[dev]"
 
       - name: Bandit Security Scan
+        working-directory: ./v1
         run: bandit -r app/ -c pyproject.toml
 
       - name: Run Tests
+        working-directory: ./v1
+        env:
+          DATABASE_URL: "postgresql+asyncpg://postgres:postgres@localhost:5432/viridis_test"
+          REDIS_URL: "redis://localhost:6379/0"
+          SERVER_PEPPER: "test_pepper"
+          ADMIN_TOKEN: "test_admin_token"
         run: pytest

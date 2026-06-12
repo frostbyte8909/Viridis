@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
 
 env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   PROJECT_ID: "viridis-production"
   REGION: "us-central1"
   SERVICE_NAME: "viridis-gateway"
@@ -37,6 +38,7 @@ jobs:
         gcloud auth configure-docker $GAR_LOCATION
 
     - name: Build and Push Docker Image
+      working-directory: ./v1
       run: |
         IMAGE_NAME="$GAR_LOCATION/$PROJECT_ID/$REPOSITORY/$SERVICE_NAME:${{ github.sha }}"
         docker build -t $IMAGE_NAME .
