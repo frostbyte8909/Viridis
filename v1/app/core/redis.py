@@ -14,7 +14,7 @@ class RedisManager:
         self.scripts: Dict[str, Script] = {}
 
     async def connect(self) -> None:
-        self.redis = from_url(settings.redis_url, decode_responses=True)
+        self.redis = from_url(str(settings.redis_url), decode_responses=True)
         await self._load_scripts()
         logger.info("Connected to Redis and loaded Lua scripts")
 
