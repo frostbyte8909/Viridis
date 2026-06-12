@@ -1,6 +1,6 @@
 import time
 from fastapi import BackgroundTasks
-from typing import Dict, Any, Tuple
+from typing import Dict, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.policy_cache import get_policy
@@ -9,7 +9,6 @@ from app.core.sliding_window import check_sliding_window
 from app.core.concurrency import check_and_acquire_concurrency
 from app.core.redis import redis_manager
 from app.services.audit import publish_audit_event
-import asyncio
 
 async def make_decision(
     key_hash: str,

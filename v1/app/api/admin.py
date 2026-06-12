@@ -5,9 +5,8 @@ from typing import Literal
 import hmac
 from app.db.session import get_db
 from app.config import settings
-from app.services.key_service import issue_raw_key, create_api_key_record
 from app.core.policy_cache import invalidate_policy
-from app.models.db import Tenant, Plan
+from app.models.db import Tenant
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
@@ -23,7 +22,7 @@ class CreateTenantReq(BaseModel):
     tier: Literal["free", "pro", "enterprise"]
 
 @router.post("/tenants", dependencies=[Depends(require_admin_token)])
-async def create_tenant(req: CreateTenantReq, db: AsyncSession = Depends(get_db)):
+async def create_tenant(req: CreateTenantReq, db: AsyncSession = Depends(get_db)) -> dict:
     tenant = Tenant(name=req.name, tier=req.tier)
     db.add(tenant)
     await db.commit()
@@ -31,7 +30,7 @@ async def create_tenant(req: CreateTenantReq, db: AsyncSession = Depends(get_db)
     return {"id": tenant.id, "name": tenant.name}
 
 @router.post("/cache/invalidate/{key_hash}", dependencies=[Depends(require_admin_token)])
-async def invalidate_cache(key_hash: str):
+async def invalidate_cache(key_hash: str) -> dict:
     await invalidate_policy(key_hash)
     return {"status": "ok", "message": "Cache invalidated"}
 

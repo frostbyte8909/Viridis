@@ -40,8 +40,8 @@ const URL = 'http://localhost:8000/v1/admit';
 
 export function normal() {
   // Simulate a pool of 1,000 distinct normal users randomly browsing
-  const userId = Math.floor(Math.random() * 1000);
-  const ip = `192.168.10.${userId % 255}`;
+  const userId = (__VU * 10000) + __ITER;
+  const ip = `192.168.10.${(userId % 254) + 1}`;
   const token = `viridis_user_${userId}`;
   
   const res = http.post(URL, JSON.stringify({ endpoint_path: '/api/v1/resource', method: 'GET', client_ip: ip }), { 
@@ -52,7 +52,7 @@ export function normal() {
   check(res, { 'normal users get 200 OK': (r) => r.status === 200 });
   
   // Realistic "human" think time: pause for 1 to 3 seconds before clicking the next link
-  sleep(Math.random() * 2 + 1);
+  sleep((__ITER % 3) + 1);
 }
 
 export function brute() {

@@ -1,9 +1,10 @@
-import json
 import logging
 from typing import Optional, Dict, Any
 
+from app.core.circuit_breaker import db_circuit_breaker
 from app.core.redis import redis_manager
 from app.models.db import ApiKey, Plan, Override
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -22,9 +23,7 @@ async def get_policy(key_hash: str, db: AsyncSession) -> Optional[Dict[str, Any]
     if cached:
         return cached
 
-    # 2. Fetch from DB (Guarded by Circuit Breaker)
-    from app.core.circuit_breaker import db_circuit_breaker
-    
+
     if not await db_circuit_breaker.allow_request():
         logger.warning(f"Database circuit breaker is OPEN. Skipping DB fallback for key: {key_hash}")
         return None
@@ -49,10 +48,10 @@ async def get_policy(key_hash: str, db: AsyncSession) -> Optional[Dict[str, Any]
             .where(Override.api_key_id == api_key.id)
         )
         await db_circuit_breaker.record_success()
-    except Exception as e:
+    except SQLAlchemyError as e:
         await db_circuit_breaker.record_failure()
         logger.error(f"Database fallback query failed: {e}")
-        raise e
+        raise
     active_override = "NONE"
     for override in overrides.scalars():
         active_override = override.override_type # e.g. HARD_DENY or HARD_ALLOW

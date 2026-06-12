@@ -11,5 +11,5 @@ def verify_override_signature(nonce: str, override_type: str, api_key_id: str, e
     payload = f"{nonce}{override_type}{api_key_id}{expires_at}".encode()
     signing_key = settings.server_pepper.encode()
     
-    expected_mac = hmac.new(signing_key, payload, hashlib.sha256).hexdigest()
+    expected_mac = hmac.new(signing_key, payload, hashlib.sha512).hexdigest()
     return hmac.compare_digest(expected_mac, signature)

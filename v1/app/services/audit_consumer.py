@@ -1,8 +1,7 @@
 import asyncio
 import logging
 from typing import List, Dict, Any
-from sqlalchemy.ext.asyncio import AsyncSession
-
+from sqlalchemy.exc import SQLAlchemyError
 from app.core.redis import redis_manager
 from app.db.session import AsyncSessionLocal
 from app.models.db import AuditLog
@@ -40,7 +39,7 @@ async def batch_write_audit_logs(events: List[Dict[str, Any]]) -> None:
             session.add(audit)
         try:
             await session.commit()
-        except Exception as e:
+        except SQLAlchemyError as e:
             logger.error(f"Failed to write audit batch to DB: {e}")
             await session.rollback()
             raise

@@ -1,7 +1,7 @@
-import json
 import logging
 from typing import Dict, Any
 from app.core.redis import redis_manager
+from redis.exceptions import RedisError
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 logger = logging.getLogger(__name__)
@@ -23,5 +23,5 @@ async def publish_audit_event(event: Dict[str, Any]) -> None:
         # Convert all values to strings for Redis Hash format required by Streams
         payload = {k: str(v) for k, v in event.items()}
         await _do_publish(r, payload)
-    except Exception as e:
+    except RedisError as e:
         logger.error(f"Failed to publish audit event to stream after retries: {e}")

@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 import asyncio
 
-from app.config import settings
 from app.api.admin import router as admin_router
 from app.api.enforce import router as enforce_router
 from fastapi.middleware.cors import CORSMiddleware
