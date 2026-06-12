@@ -1,15 +1,10 @@
-version: "3.8"
-
 services:
   api:
     build: .
     ports:
-      - "8000:8000"
-    environment:
-      - DATABASE_URL=REDACTED_DB_URL
-      - REDIS_URL=redis://redis:6379/0
-      - ADMIN_TOKEN=REDACTED_ADMIN_TOKEN
-      - SERVER_PEPPER=REDACTED_PEPPER
+      - "127.0.0.1:8000:8000"
+    env_file:
+      - .env
     depends_on:
       db:
         condition: service_healthy
@@ -20,12 +15,10 @@ services:
 
   db:
     image: postgres:15-alpine
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=viridis
+    env_file:
+      - .env
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -35,7 +28,7 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
