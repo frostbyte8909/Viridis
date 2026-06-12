@@ -39,10 +39,10 @@ app.add_middleware(
 
 @app.get("/health")
 async def health_check() -> dict[str, str]:
+    # Shallow liveness check: process is alive and config is loaded
     return {"status": "ok"}
-
 
 @app.get("/ready")
 async def readiness_check() -> dict[str, str]:
-    # TODO: Add real Redis and DB connection checks here
+    # Shallow readiness check
     return {"status": "ready"}

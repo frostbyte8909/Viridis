@@ -5,11 +5,8 @@ services:
     build: .
     ports:
       - "8000:8000"
-    environment:
-      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/viridis
-      - REDIS_URL=redis://redis:6379/0
-      - ADMIN_TOKEN=local_admin_token_123
-      - SERVER_PEPPER=local_pepper_abc
+    env_file:
+      - .env.local
     depends_on:
       db:
         condition: service_healthy
