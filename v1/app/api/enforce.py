@@ -1,9 +1,9 @@
 import hashlib
 import uuid
-from typing import Optional
-
 from fastapi import APIRouter, Depends, Header, HTTPException, Request
-from pydantic import BaseModel
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field
+from typing import Literal, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.decision import make_decision
@@ -13,8 +13,8 @@ from app.db.session import get_db
 router = APIRouter(prefix="/v1", tags=["Enforcement"])
 
 class AdmitRequest(BaseModel):
-    endpoint_path: str
-    method: str
+    endpoint_path: str = Field(..., max_length=2000)
+    method: Literal["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"]
     client_ip: Optional[str] = None
     trace_id: Optional[str] = None
 
@@ -62,4 +62,4 @@ async def admit(
     elif decision["decision"] == "CHALLENGE":
         status_code = 202
         
-    return decision
+    return JSONResponse(content=decision, status_code=status_code)
