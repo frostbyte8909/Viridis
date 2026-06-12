@@ -13,6 +13,8 @@ dependencies = [
     "asyncpg>=0.29.0",
     "redis>=5.0.4",
     "base58>=2.1.1",
+    "pyjwt[crypto]>=2.8.0",
+    "httpx>=0.28.1",
 ]
 
 [project.optional-dependencies]
