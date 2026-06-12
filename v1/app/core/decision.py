@@ -6,9 +6,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.policy_cache import get_policy
 from app.core.token_bucket import check_token_bucket
 from app.core.sliding_window import check_sliding_window
-from app.core.concurrency import check_and_acquire_concurrency
+from app.core.concurrency import check_and_acquire_concurrency, release_concurrency
 from app.core.redis import redis_manager
 from app.services.audit import publish_audit_event
+import logging
+
+logger = logging.getLogger(__name__)
 
 async def make_decision(
     key_hash: str,
@@ -89,25 +92,34 @@ async def make_decision(
     # Simplified weight: assume weight = 1.0 for now
     tokens_to_consume = 1.0
     
-    tb_allowed, tb_remaining, tb_retry = await check_token_bucket(
-        key_id, burst_capacity, burst_refill_rate, tokens_to_consume
-    )
-    if not tb_allowed:
-        return finalize("THROTTLE", "BURST_EXHAUSTED", retry_after_seconds=tb_retry)
+    try:
+        tb_allowed, tb_remaining, tb_retry = await check_token_bucket(
+            key_id, burst_capacity, burst_refill_rate, tokens_to_consume
+        )
+        if not tb_allowed:
+            await release_concurrency(key_id, request_id)
+            return finalize("THROTTLE", "BURST_EXHAUSTED", retry_after_seconds=tb_retry)
 
-    # 6. Sliding Window (Sustained)
-    sustained_limit = int(policy["requests_per_minute"])
-    sw_allowed, sw_remaining, sw_retry = await check_sliding_window(
-        key_id, 60, sustained_limit, request_id
-    )
-    if not sw_allowed:
-        return finalize("THROTTLE", "QUOTA_EXCEEDED", retry_after_seconds=sw_retry)
+        # 6. Sliding Window (Sustained)
+        sustained_limit = int(policy["requests_per_minute"])
+        sw_allowed, sw_remaining, sw_retry = await check_sliding_window(
+            key_id, 60, sustained_limit, request_id
+        )
+        if not sw_allowed:
+            await release_concurrency(key_id, request_id)
+            return finalize("THROTTLE", "QUOTA_EXCEEDED", retry_after_seconds=sw_retry)
 
-    # 7. Abuse Heuristics (Impossible burst)
-    # Check if >50% quota consumed in <2s (naive implementation)
-    if sw_remaining < (sustained_limit / 2):
-        # We could add an atomic fast-counter here to check the 2s burst rate
-        pass
+        # 7. Abuse Heuristics (Impossible burst)
+        # Check if >50% quota consumed in <2s (naive implementation)
+        if sw_remaining < (sustained_limit / 2):
+            # We could add an atomic fast-counter here to check the 2s burst rate
+            pass
 
-    # Success
-    return finalize("ALLOW", "OK", tokens_remaining=tb_remaining, concurrency_remaining=(max_concurrency - 1))
+        # Success
+        return finalize("ALLOW", "OK", tokens_remaining=tb_remaining, concurrency_remaining=(max_concurrency - 1))
+        
+    except Exception as e:
+        logger.error(f"Redis quota error: {e}")
+        await release_concurrency(key_id, request_id)
+        # Fail-open
+        return finalize("ALLOW", "FAIL_OPEN")

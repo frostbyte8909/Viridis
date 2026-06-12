@@ -3,9 +3,10 @@ import uuid
 from typing import Optional, List, Dict, Any
 
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
 
 from app.api.admin import require_admin_token
 from app.core.policy_cache import invalidate_policy
@@ -19,11 +20,11 @@ router = APIRouter(prefix="/admin/keys", tags=["Limits"])
 
 
 class LimitOverridePatchReq(BaseModel):
-    requests_per_minute: Optional[int] = None
-    burst_capacity: Optional[int] = None
-    burst_refill_rate: Optional[float] = None
-    max_concurrency: Optional[int] = None
-    cooldown_seconds: Optional[int] = None
+    requests_per_minute: Optional[int] = Field(None, ge=0)
+    burst_capacity: Optional[int] = Field(None, ge=0)
+    burst_refill_rate: Optional[float] = Field(None, ge=0.0)
+    max_concurrency: Optional[int] = Field(None, ge=0)
+    cooldown_seconds: Optional[int] = Field(None, ge=0)
 
 
 @router.patch("/{key_id}/limits", dependencies=[Depends(require_admin_token)])
@@ -33,17 +34,17 @@ async def update_key_limits(
     db: AsyncSession = Depends(get_db)
 ) -> Dict[str, Any]:
     try:
-        # Check if key exists
-        result = await db.execute(select(ApiKey).where(ApiKey.id == key_id))
+        # Check if key exists and fetch overrides concurrently
+        query = select(ApiKey).options(
+            selectinload(ApiKey.limit_overrides)
+        ).where(ApiKey.id == key_id)
+        result = await db.execute(query)
         api_key = result.scalar_one_or_none()
         if not api_key:
             raise HTTPException(status_code=404, detail="Key not found")
 
         # Fetch or create override
-        override_result = await db.execute(
-            select(ApiKeyLimitOverride).where(ApiKeyLimitOverride.api_key_id == key_id)
-        )
-        override = override_result.scalar_one_or_none()
+        override = api_key.limit_overrides
 
         if not override:
             override = ApiKeyLimitOverride(api_key_id=key_id)
@@ -76,15 +77,15 @@ async def reset_key_limits(
     db: AsyncSession = Depends(get_db)
 ) -> Dict[str, Any]:
     try:
-        result = await db.execute(select(ApiKey).where(ApiKey.id == key_id))
+        query = select(ApiKey).options(
+            selectinload(ApiKey.limit_overrides)
+        ).where(ApiKey.id == key_id)
+        result = await db.execute(query)
         api_key = result.scalar_one_or_none()
         if not api_key:
             raise HTTPException(status_code=404, detail="Key not found")
 
-        override_result = await db.execute(
-            select(ApiKeyLimitOverride).where(ApiKeyLimitOverride.api_key_id == key_id)
-        )
-        override = override_result.scalar_one_or_none()
+        override = api_key.limit_overrides
 
         if override:
             await db.delete(override)
