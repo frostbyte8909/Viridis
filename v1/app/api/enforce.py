@@ -20,6 +20,12 @@ class AdmitRequest(BaseModel):
 
 
 
+import asyncio
+
+def _hash_key_sync(raw_key: str, pepper: str) -> str:
+    return hashlib.sha256(f"{raw_key}{pepper}".encode()).hexdigest()
+
+
 @router.post("/admit")
 async def admit(
     req: AdmitRequest,
@@ -32,8 +38,8 @@ async def admit(
     
     raw_key = authorization.split(" ")[1]
     
-    # Hash key with pepper
-    key_hash = hashlib.sha256(f"{raw_key}{settings.server_pepper}".encode()).hexdigest()
+    # Hash key with pepper asynchronously in a worker thread
+    key_hash = await asyncio.to_thread(_hash_key_sync, raw_key, settings.server_pepper)
     
     trace_id = req.trace_id or str(uuid.uuid4())
     client_ip = req.client_ip or request.client.host if request.client else "unknown"
