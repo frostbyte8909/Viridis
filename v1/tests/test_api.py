@@ -10,7 +10,7 @@ def test_missing_auth_header():
         "method": "GET",
         "client_ip": "10.0.0.1"
     })
-    assert response.status_code == 403
+    assert response.status_code == 401
 
 def test_healthz():
     # If there's a health endpoint, it should return 200
