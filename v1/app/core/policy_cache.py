@@ -23,36 +23,34 @@ async def get_policy(key_hash: str, db: AsyncSession) -> Optional[Dict[str, Any]
         return cached
 
     # 2. Fetch from DB (Guarded by Circuit Breaker)
-    from app.core.circuit_breaker import db_circuit_breaker
+    from app.core.circuit_breaker import db_circuit_breaker, execute_with_circuit_breaker, CircuitBreakerError
     
-    if not db_circuit_breaker.allow_request():
+    try:
+        async with execute_with_circuit_breaker(db_circuit_breaker):
+            result = await db.execute(
+                select(ApiKey, Plan)
+                .join(Plan, ApiKey.plan_id == Plan.id)
+                .where(ApiKey.key_hash == key_hash)
+            )
+            row = result.first()
+            
+            if not row:
+                return None
+                
+            api_key, plan = row
+        
+            # Gather hard overrides
+            overrides = await db.execute(
+                select(Override)
+                .where(Override.api_key_id == api_key.id)
+            )
+    except CircuitBreakerError:
         logger.warning(f"Database circuit breaker is OPEN. Skipping DB fallback for key: {key_hash}")
         return None
-
-    try:
-        result = await db.execute(
-            select(ApiKey, Plan)
-            .join(Plan, ApiKey.plan_id == Plan.id)
-            .where(ApiKey.key_hash == key_hash)
-        )
-        row = result.first()
-        
-        if not row:
-            db_circuit_breaker.record_success()
-            return None
-            
-        api_key, plan = row
-    
-        # Gather hard overrides
-        overrides = await db.execute(
-            select(Override)
-            .where(Override.api_key_id == api_key.id)
-        )
-        db_circuit_breaker.record_success()
     except Exception as e:
-        db_circuit_breaker.record_failure()
         logger.error(f"Database fallback query failed: {e}")
         raise e
+        
     active_override = "NONE"
     for override in overrides.scalars():
         active_override = override.override_type # e.g. HARD_DENY or HARD_ALLOW

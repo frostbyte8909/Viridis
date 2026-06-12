@@ -33,4 +33,20 @@ class CircuitBreaker:
             return False
         return True  # HALF-OPEN lets test requests pass
 
+class CircuitBreakerError(Exception):
+    pass
+
+import contextlib
+
+@contextlib.asynccontextmanager
+async def execute_with_circuit_breaker(cb: CircuitBreaker):
+    if not cb.allow_request():
+        raise CircuitBreakerError("Circuit breaker is OPEN. Request denied.")
+    try:
+        yield
+        cb.record_success()
+    except Exception as e:
+        cb.record_failure()
+        raise e
+
 db_circuit_breaker = CircuitBreaker()

@@ -21,6 +21,8 @@ async def setup_consumer_group() -> None:
         if "BUSYGROUP" not in str(e):
             logger.error(f"Error creating consumer group: {e}")
 
+from app.core.circuit_breaker import db_circuit_breaker, execute_with_circuit_breaker, CircuitBreakerError
+
 async def batch_write_audit_logs(events: List[Dict[str, Any]]) -> None:
     async with AsyncSessionLocal() as session:
         for event in events:
@@ -39,10 +41,16 @@ async def batch_write_audit_logs(events: List[Dict[str, Any]]) -> None:
             )
             session.add(audit)
         try:
-            await session.commit()
+            async with execute_with_circuit_breaker(db_circuit_breaker):
+                await session.commit()
+        except CircuitBreakerError:
+            logger.warning("Circuit breaker OPEN. Skipping audit log DB commit. Events will remain unacknowledged in Redis.")
+            await session.rollback()
+            raise
         except Exception as e:
             logger.error(f"Failed to write audit batch to DB: {e}")
             await session.rollback()
+            raise
 
 async def run_audit_consumer() -> None:
     """Runs continuously in the background to consume from Redis Streams."""
