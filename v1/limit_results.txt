@@ -1,0 +1,5 @@
+Testing 1000 VUs...
+-> FAILED: HTTP Error rate hit 5.36% at 1000 VUs.
+
+[!] LIMIT FOUND: The framework broke at 1000 VUs.
+[*] Absolute maximum stable capacity: 0 VUs.
