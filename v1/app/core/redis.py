@@ -1,8 +1,7 @@
 import logging
 import os
-from typing import Dict
+from typing import Dict, Any
 from redis.asyncio import Redis, from_url
-from redis.client import Script
 
 from app.config import settings
 
@@ -11,7 +10,7 @@ logger = logging.getLogger(__name__)
 class RedisManager:
     def __init__(self) -> None:
         self.redis: Redis | None = None
-        self.scripts: Dict[str, Script] = {}
+        self.scripts: Dict[str, Any] = {}
 
     async def connect(self) -> None:
         self.redis = from_url(str(settings.redis_url), decode_responses=True)
@@ -44,7 +43,7 @@ class RedisManager:
             raise RuntimeError("Redis client not initialized")
         return self.redis
 
-    def get_script(self, name: str) -> Script:
+    def get_script(self, name: str) -> Any:
         script = self.scripts.get(name)
         if not script:
             raise ValueError(f"Script {name} not found")
