@@ -8,6 +8,7 @@ from app.api.enforce import router as enforce_router
 from app.api.limits import router as limits_router
 from app.api.quota import router as quota_router
 from app.api.audit_export import router as audit_router
+from app.api.metrics import router as metrics_router
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.redis import redis_manager
 import os
@@ -47,6 +48,7 @@ app.include_router(limits_router)
 app.include_router(quota_router)
 app.include_router(audit_router)
 app.include_router(waf_admin_router)
+app.include_router(metrics_router)
 
 app.add_middleware(
     CORSMiddleware,

@@ -9,6 +9,7 @@ from app.core.sliding_window import check_sliding_window
 from app.core.concurrency import check_and_acquire_concurrency, release_concurrency
 from app.core.redis import redis_manager
 from app.services.audit import publish_audit_event
+from app.core.metrics import emit_block, viridis_active_concurrency_slots
 import logging
 
 logger = logging.getLogger(__name__)
@@ -45,6 +46,9 @@ async def make_decision(
         }
         background_tasks.add_task(publish_audit_event, event)
         
+        if decision == "THROTTLE" or decision == "DENY":
+            emit_block(reason=code)
+            
         return {
             "decision": decision,
             "reason_code": code,

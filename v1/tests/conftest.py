@@ -5,7 +5,8 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from fastapi.testclient import TestClient
 
 from app.main import app
-from app.db.session import get_db, Base
+from app.db.session import get_db
+from app.models.db import Base
 from app.core.redis import redis_manager
 
 # Use real Redis + Postgres (from GitHub Actions services or docker-compose)
