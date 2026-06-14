@@ -1,11 +1,11 @@
 import asyncio
 import logging
 from typing import List, Dict, Any
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.redis import redis_manager
 from app.db.session import AsyncSessionLocal
 from app.models.db import AuditLog
+from sqlalchemy.dialects.postgresql import insert
 
 logger = logging.getLogger(__name__)
 
@@ -21,24 +21,30 @@ async def setup_consumer_group() -> None:
         if "BUSYGROUP" not in str(e):
             logger.error(f"Error creating consumer group: {e}")
 
+def _normalize_event(event: Dict[str, Any]) -> Dict[str, Any]:
+    for field in ["decision_id", "api_key_id", "tenant_id"]:
+        if event.get(field) == "":
+            event[field] = None
+    return {
+        "decision_id": event.get("decision_id"),
+        "api_key_id": event.get("api_key_id"),
+        "tenant_id": event.get("tenant_id"),
+        "endpoint_path": event.get("endpoint_path", ""),
+        "method": event.get("method", ""),
+        "decision": event.get("decision", ""),
+        "reason_code": event.get("reason_code", ""),
+        "processing_ms": float(event.get("processing_ms", 0.0)),
+        "client_ip": event.get("client_ip", ""),
+        "trace_id": event.get("trace_id", "")
+    }
+
 async def batch_write_audit_logs(events: List[Dict[str, Any]]) -> None:
     async with AsyncSessionLocal() as session:
-        for event in events:
-            # We skip fields like tokens_consumed for simplicity if not in payload
-            audit = AuditLog(
-                decision_id=event.get("decision_id", ""),
-                api_key_id=event.get("api_key_id", ""),
-                tenant_id=event.get("tenant_id", ""),
-                endpoint_path=event.get("endpoint_path", ""),
-                method=event.get("method", ""),
-                decision=event.get("decision", ""),
-                reason_code=event.get("reason_code", ""),
-                processing_ms=float(event.get("processing_ms", 0.0)),
-                client_ip=event.get("client_ip", ""),
-                trace_id=event.get("trace_id", "")
-            )
-            session.add(audit)
+        normalized_events = [_normalize_event(e) for e in events]
+        insert_stmt = insert(AuditLog).values(normalized_events)
+        
         try:
+            await session.execute(insert_stmt)
             await session.commit()
         except Exception as e:
             logger.error(f"Failed to write audit batch to DB: {e}")

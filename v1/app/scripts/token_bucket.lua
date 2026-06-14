@@ -12,11 +12,11 @@ local elapsed = now - last_refill
 local refilled = math.min(capacity, tokens + elapsed * refill_rate)
 
 if refilled < tokens_to_consume then
-    return {0, refilled, 0}  -- denied, remaining, retry_after
+    local retry_after = math.ceil((tokens_to_consume - refilled) / refill_rate)
+    return {0, refilled, retry_after}  -- denied, remaining, retry_after
 end
 
 local new_tokens = refilled - tokens_to_consume
-local retry_after = math.ceil((tokens_to_consume - refilled) / refill_rate)
 
 redis.call('HMSET', key, 'tokens', new_tokens, 'last_refill', now)
 redis.call('EXPIRE', key, 3600)

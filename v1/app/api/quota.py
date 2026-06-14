@@ -26,28 +26,32 @@ async def get_current_quota(key_id: str, key_hash: str, db: AsyncSession) -> Dic
     r = redis_manager.get_client()
     now = time.time()
     
-    # 1. Token Bucket
     bucket_key = f"viridis:bucket:{key_id}"
-    bucket_data = await r.hmget(bucket_key, ["tokens", "last_refill"])
+    window_key = f"viridis:window:{key_id}"
+    inflight_key = f"viridis:inflight:{key_id}"
+    
+    pipe = r.pipeline()
+    pipe.hmget(bucket_key, ["tokens", "last_refill"])
+    pipe.zcard(window_key)
+    pipe.zremrangebyscore(inflight_key, "-inf", now)
+    pipe.zcard(inflight_key)
+    
+    results = await pipe.execute()
+    bucket_data = results[0]
+    window_count = results[1] or 0
+    inflight_count = results[3] or 0
+    
     capacity = float(policy["burst_capacity"])
     refill_rate = float(policy["burst_refill_rate"])
     
     tokens = capacity
-    if bucket_data[0] is not None and bucket_data[1] is not None:
+    if bucket_data and bucket_data[0] is not None and bucket_data[1] is not None:
         stored_tokens = float(bucket_data[0])
         last_refill = float(bucket_data[1])
         elapsed = now - last_refill
         tokens = min(capacity, stored_tokens + (elapsed * refill_rate))
     
-    # 2. Sliding Window (Fixed Window implementation check)
-    window_key = f"viridis:window:{key_id}:{int(now / 60)}"
-    window_count = await r.zcard(window_key) or 0
     limit = int(policy["requests_per_minute"])
-    
-    # 3. Concurrency
-    inflight_key = f"viridis:inflight:{key_id}"
-    await r.zremrangebyscore(inflight_key, "-inf", now)
-    inflight_count = await r.zcard(inflight_key) or 0
     max_concurrency = int(policy["max_concurrency"])
 
     return {

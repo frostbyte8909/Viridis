@@ -22,7 +22,7 @@ async def check_sliding_window(
     # If allowed (1), index 1 is remaining quota.
     # If denied (0), index 1 is current count in window.
     result = await script(
-        keys=[f"viridis:window:{key_id}:{int(now / 60)}"],
+        keys=[f"viridis:window:{key_id}"],
         args=[window_seconds, limit, now, request_id]
     )
     
